@@ -1,0 +1,90 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map</title>
+    <style type="text/css">
+        html, body, #map-canvas {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpZhVKRniPiVcE8VCZmvtbVTyyWz2m-Og">
+    </script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
+    <script type="text/javascript">
+        var map;
+      function initialize() {
+        var mapOptions = {
+            center: { lat: 30.099408866368016, lng: 391.32052463912964 },
+          zoom: 15
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+
+
+        var drawingManager = new google.maps.drawing.DrawingManager({
+            drawingMode: google.maps.drawing.OverlayType.MARKER,
+            drawingControl: true,
+            drawingControlOptions: {
+                position: google.maps.ControlPosition.TOP_RIGHT,
+                drawingModes: [
+                  google.maps.drawing.OverlayType.MARKER,
+                  google.maps.drawing.OverlayType.CIRCLE,
+                  google.maps.drawing.OverlayType.POLYGON,
+                  google.maps.drawing.OverlayType.POLYLINE,
+                  google.maps.drawing.OverlayType.RECTANGLE
+                ]
+            },
+            //markerOptions: {
+            //    icon: 'images/beachflag.png'
+            //},
+            circleOptions: {
+                fillColor: '#ff0000',
+                fillOpacity: 0.5,
+                strokeWeight: 5,
+                clickable: false,
+                editable: true,
+                zIndex: 1
+            }
+        });
+        google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {
+            console.log(event);
+            //if (event.type == google.maps.drawing.OverlayType.CIRCLE) {
+            //    var radius = event.overlay.getRadius();
+            //}
+            event.overlay.setEditable(true);
+        });
+        //drawingManager.setMap(map);
+       
+      }
+      function addSensor() {
+          var sensorPoint = null;
+         var addSensorListener =  google.maps.event.addListener(map, 'click', function (event) {
+             sensorPoint = event;
+             google.maps.event.removeListener(addSensorListener);
+             map.setOptions({
+                 draggableCursor: "url('https://maps.gstatic.com/mapfiles/openhand_8_8.cur'), default"
+             });
+          });
+          map.setOptions({
+              draggableCursor: "url(/images/More-16.png), move"
+          });
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</head>
+<body>
+    <div style="position:absolute; top:0; left:40%; z-index:2; cursor:move">
+        <div class="btn btn-default" onclick="addSensor();">
+            Add Sensor
+        </div>
+    </div>
+    <div id="map-canvas"></div>
+</body>
+</html>
