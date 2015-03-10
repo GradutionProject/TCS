@@ -1,6 +1,14 @@
 USE TCS
 ;
 
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('FK_LocationSensors_Location') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE LocationSensors DROP CONSTRAINT FK_LocationSensors_Location
+;
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('FK_LocationSensors_Sensors') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE LocationSensors DROP CONSTRAINT FK_LocationSensors_Sensors
+;
+
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('FK_LocationStatus_Location') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
 ALTER TABLE LocationStatus DROP CONSTRAINT FK_LocationStatus_Location
 ;
@@ -21,10 +29,6 @@ IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('FK_SensorData_Sens
 ALTER TABLE SensorData DROP CONSTRAINT FK_SensorData_Sensors
 ;
 
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('FK_Sensors_Location') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
-ALTER TABLE Sensors DROP CONSTRAINT FK_Sensors_Location
-;
-
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('FK_Sensors_SensorType') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
 ALTER TABLE Sensors DROP CONSTRAINT FK_Sensors_SensorType
 ;
@@ -32,6 +36,10 @@ ALTER TABLE Sensors DROP CONSTRAINT FK_Sensors_SensorType
 
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('Location') AND  OBJECTPROPERTY(id, 'IsUserTable') = 1)
 DROP TABLE Location
+;
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('LocationSensors') AND  OBJECTPROPERTY(id, 'IsUserTable') = 1)
+DROP TABLE LocationSensors
 ;
 
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('LocationStatus') AND  OBJECTPROPERTY(id, 'IsUserTable') = 1)
@@ -58,9 +66,15 @@ DROP TABLE SensorType
 CREATE TABLE Location ( 
 	LocationId nvarchar(128) NOT NULL,
 	Name nvarchar(512) NOT NULL,
-	Longitude decimal(38,10) NOT NULL,
-	Latitude decimal(38,10) NOT NULL,
 	SpatialReference int NOT NULL
+)
+;
+
+CREATE TABLE LocationSensors ( 
+	LocationSensorsId nvarchar(128) NOT NULL,
+	LocationId nvarchar(128) NOT NULL,
+	SensorId nvarchar(128) NOT NULL,
+	InputOrOutput bit NOT NULL
 )
 ;
 
@@ -93,8 +107,6 @@ CREATE TABLE Sensors (
 	SensorId nvarchar(128) NOT NULL,
 	Name nvarchar(512) NOT NULL,
 	TypeId nvarchar(128) NOT NULL,
-	LocationId nvarchar(128) NOT NULL,
-	InputOrOutput bit NOT NULL,
 	Longitude decimal(38,10) NOT NULL,
 	Latitude decimal(38,10) NOT NULL,
 	SpatialReference int NOT NULL
@@ -110,6 +122,10 @@ CREATE TABLE SensorType (
 
 ALTER TABLE Location ADD CONSTRAINT PK_Location 
 	PRIMARY KEY CLUSTERED (LocationId)
+;
+
+ALTER TABLE LocationSensors ADD CONSTRAINT PK_LocationSensors 
+	PRIMARY KEY CLUSTERED (LocationSensorsId)
 ;
 
 ALTER TABLE LocationStatus ADD CONSTRAINT PK_LocationStatus 
@@ -134,6 +150,14 @@ ALTER TABLE SensorType ADD CONSTRAINT PK_SensorType
 
 
 
+ALTER TABLE LocationSensors ADD CONSTRAINT FK_LocationSensors_Location 
+	FOREIGN KEY (LocationId) REFERENCES Location (LocationId)
+;
+
+ALTER TABLE LocationSensors ADD CONSTRAINT FK_LocationSensors_Sensors 
+	FOREIGN KEY (SensorId) REFERENCES Sensors (SensorId)
+;
+
 ALTER TABLE LocationStatus ADD CONSTRAINT FK_LocationStatus_Location 
 	FOREIGN KEY (LocationId) REFERENCES Location (LocationId)
 ;
@@ -152,10 +176,6 @@ ALTER TABLE LocationStatusHistory ADD CONSTRAINT FK_LocationStatusHistory_Sensor
 
 ALTER TABLE SensorData ADD CONSTRAINT FK_SensorData_Sensors 
 	FOREIGN KEY (SensorId) REFERENCES Sensors (SensorId)
-;
-
-ALTER TABLE Sensors ADD CONSTRAINT FK_Sensors_Location 
-	FOREIGN KEY (LocationId) REFERENCES Location (LocationId)
 ;
 
 ALTER TABLE Sensors ADD CONSTRAINT FK_Sensors_SensorType 
