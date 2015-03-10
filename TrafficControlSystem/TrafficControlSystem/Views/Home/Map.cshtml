@@ -12,28 +12,7 @@
     
 </head>
 <body>
-    <div class="widget">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                Sensors
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="btn btn-default" onclick="addSensor();">
-                            Add Sensor
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="senors-grid col-md-8">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-       
-    </div>
+    
     <div id="map-canvas"></div>
 
     @Scripts.Render("~/bundles/jquery")
@@ -56,36 +35,24 @@
                 mapOptions);
 
         }
-        function removeSensor(sensorId)
-        {
-            sensors[sensorId].marker.setMap(null);
-            $('.senors-grid .sens-' + sensorId).remove();
-        }
-        function addSensor() {
-            var addSensorListener = google.maps.event.addListener(map, 'click', function (event) {
-                google.maps.event.removeListener(addSensorListener);
-                var sensorId = sensorCounter++;
-                var sensor = {
-                    id: sensorId
-                };
-                sensor.marker = new google.maps.Marker({
-                    position: event.latLng,
-                    map: map,
-                    title: "Sensor (" + sensorId + ")",
-                    icon: "/images/More-16.png"
-                });
-                sensors[sensorId] = sensor;
-                $('.senors-grid').append("<div class='row sens-"+ sensorId +"'><div class='col-md-4'>Sensor (" + sensorId + ")</div><div class='col-md-4'><div class='btn btn-default' onclick='removeSensor(" + sensorId + ")'>Delete</div></div></div>");
-                map.setOptions({
-                    draggableCursor: "url('https://maps.gstatic.com/mapfiles/openhand_8_8.cur'), default"
-                });
-            });
-            map.setOptions({
-                draggableCursor: "crosshair"
-            });
-        }
+       
         google.maps.event.addDomListener(window, 'load', initialize);
-        $('.widget').draggable();
+        
+    </script>
+    @Html.Action("Sensors")
+    <script>
+        (function () {
+            $('.widget').draggable();
+            $('section.update-section').on('refresh', function () {
+                var $this = $(this);
+                var url = $this.data('url');
+                $.ajax({
+                    url: url
+                }).success(function (result) {
+                    console.log(result);
+                });
+            });
+        })();
     </script>
 </body>
 </html>

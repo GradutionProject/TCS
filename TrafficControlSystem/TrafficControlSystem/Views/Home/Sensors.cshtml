@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Sensors";
+    Layout = null;
+}
+<div class="widget">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="icon"><i class="fa fa-plus-circle"></i></div><div class="title">Sensors</div>
+        </div>
+        <div class="panel-body">
+            <section data-url="@Url.Action("AllSensors", "Home")" class="update-section">
+                @Html.Action("AllSensors", "Home")
+            </section>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+        var actions = {
+            removeSensor: function (sensorId) {
+                sensors[sensorId].marker.setMap(null);
+                $('.senors-grid .sens-' + sensorId).remove();
+            },
+            selectLocation: function () {
+                var addSensorListener = google.maps.event.addListener(map, 'click', function (event) {
+                    google.maps.event.removeListener(addSensorListener);
+                    var sensorId = sensorCounter++;
+                    var sensor = {
+                        id: sensorId
+                    };
+                    sensor.marker = new google.maps.Marker({
+                        position: event.latLng,
+                        map: map,
+                        title: "Sensor (" + sensorId + ")",
+                        icon: "/images/More-16.png"
+                    });
+                    sensors[sensorId] = sensor;
+                    $('.senors-grid').append("<div class='row sens-" + sensorId + "'><div class='col-md-4'>Sensor (" + sensorId + ")</div><div class='col-md-4'><div class='btn btn-default' onclick='removeSensor(" + sensorId + ")'>Delete</div></div></div>");
+                    map.setOptions({
+                        draggableCursor: "url('https://maps.gstatic.com/mapfiles/openhand_8_8.cur'), default"
+                    });
+                });
+                map.setOptions({
+                    draggableCursor: "crosshair"
+                });
+            }
+        };
+        $('.form.add-sensor').each(function () {
+            var $form = $(this);
+            var inputs = {};
+            $form.find('input').each(function () {
+                var $input = $(this);
+                inputs[$input.attr("name")] = $input;
+            });
+            $form.find('.action').each(function () {
+                var $action = $(this);
+                $action.click(function () {
+                    actions[$action.data("action")].call($action);
+                })
+            });
+        });
+    })();
+</script>

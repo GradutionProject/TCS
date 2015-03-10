@@ -20,4 +20,16 @@ textarea {
 .widget {
     z-index:20;
     position:absolute;
+    top:5%;
+    left:45%;
+
+ 
+
+
 }
+    .widget .icon {
+        float:left;
+    }
+    .widget .title {
+        padding-left:25px;
+    }

@@ -1,0 +1,76 @@
+﻿@model IEnumerable<TCS.Model.Sensor>
+@{
+    Layout = null;
+}
+
+<p>
+    <a href="#">Add Sensor</a>
+</p>
+<div class="form-horizontal form add-sensor">
+    <div class="form-group">
+        <label class="control-label col-md-4">Sensor Name</label>
+        <div class="col-md-6">
+            <input type="text" name="Name" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">Latitude</label>
+        <div class="col-md-6">
+            <input type="text" name="Latitude" class="form-control disabled" disabled="disabled" />
+        </div>
+        <div class="col-md-1">
+            <a href="#" title="Select Location" class="action" data-action="selectLocation"><i class="fa fa-location-arrow"></i></a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">Longitude</label>
+        <div class="col-md-6">
+            <input type="text" name="Longitude" class="form-control disabled" disabled="disabled" />
+        </div>
+    </div>
+</div>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SensorType.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Longitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Latitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpatialReference)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+    {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SensorType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Longitude)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Latitude)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SpatialReference)
+                </td>
+                <td>
+                    <a href="#">Delete</a>
+                </td>
+            </tr>
+    }
+
+    </table>

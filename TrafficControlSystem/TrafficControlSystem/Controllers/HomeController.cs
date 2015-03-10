@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TCS.Model;
 
 namespace TrafficControlSystem.Controllers
 {
@@ -35,6 +36,13 @@ namespace TrafficControlSystem.Controllers
         public ActionResult Sensors()
         {
             return View();
+        }
+
+        public ActionResult AllSensors()
+        {
+            DataModel db = new DataModel();
+            var model = db.Sensors;
+            return View(model);
         }
     }
 }
