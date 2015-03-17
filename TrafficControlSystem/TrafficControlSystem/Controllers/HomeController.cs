@@ -35,13 +35,16 @@ namespace TrafficControlSystem.Controllers
 
         public ActionResult Sensors()
         {
+            DataModel db = new DataModel();
+            ViewBag.SensorTypes =  db.SensorTypes.ToList();
             return View();
         }
 
         public ActionResult AllSensors()
         {
             DataModel db = new DataModel();
-            var model = db.Sensors;
+            
+            var model = db.Sensors.OrderBy(s => s.Name).ToList();
             return View(model);
         }
     }
