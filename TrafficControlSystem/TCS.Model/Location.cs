@@ -11,6 +11,7 @@ namespace TCS.Model
     {
         public Location()
         {
+            LocationId = Guid.NewGuid().ToString();
             LocationSensors = new HashSet<LocationSensor>();
             LocationStatus = new HashSet<LocationStatu>();
             LocationStatusHistories = new HashSet<LocationStatusHistory>();

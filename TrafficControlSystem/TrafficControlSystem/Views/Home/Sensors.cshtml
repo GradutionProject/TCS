@@ -2,16 +2,16 @@
     ViewBag.Title = "Sensors";
     Layout = null;
 }
-<div class="widget">
+<div class="widget minimize">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="icon"><i class="fa fa-plus-circle"></i></div><div class="title">Sensors</div>
         </div>
-        <div class="panel-body">
+        <div class="panel-body form add-sensor">
             <p>
                 <a href="#">Add Sensor</a>
             </p>
-            <div class="form-horizontal form add-sensor">
+            <div class="form-horizontal">
                 <div class="form-group">
                     <label class="control-label col-md-4">Sensor Name</label>
                     <div class="col-md-6">
@@ -40,14 +40,14 @@
                             <option> -- Select Type-- </option>
                             @foreach (var type in ViewBag.SensorTypes as IEnumerable<TCS.Model.SensorType>)
                             {
-                                <option value="@type.TypeId">@type.Name</option>
+                            <option value="@type.TypeId">@type.Name</option>
                             }
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <div class="btn btn-primary action" data-action-click="submit" >Save</div>
+                        <div class="btn btn-primary action" data-action-click="submit">Save</div>
                     </div>
                 </div>
             </div>
@@ -58,4 +58,4 @@
     </div>
 
 </div>
-<script src="~/Scripts/TCS/sensors.js"></script>
+    

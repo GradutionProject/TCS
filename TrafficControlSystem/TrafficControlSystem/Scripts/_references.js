@@ -9,3 +9,6 @@
 /// <reference path="jquery.validate.js" />
 /// <reference path="jquery.validate.unobtrusive.js" />
 /// <reference path="tcs/sensors.js" />
+/// <reference path="tcs/form.js" />
+/// <reference path="tcs/widget.js" />
+/// <reference path="tcs/locations.js" />

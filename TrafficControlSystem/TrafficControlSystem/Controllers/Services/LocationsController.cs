@@ -12,44 +12,44 @@ using TCS.Model;
 
 namespace TrafficControlSystem.Controllers.Services
 {
-    public class SensorsController : ApiController
+    public class LocationsController : ApiController
     {
         private DataModel db = new DataModel();
 
-        [HttpGet]
-        public IEnumerable<Sensor> All()
+        // GET: api/Locations
+        public IQueryable<Location> GetLocations()
         {
-            return db.Sensors.ToList();
+            return db.Locations;
         }
 
-        // GET: api/Sensors/5
-        [ResponseType(typeof(Sensor))]
-        public IHttpActionResult GetSensor(string id)
+        // GET: api/Locations/5
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult GetLocation(string id)
         {
-            Sensor sensor = db.Sensors.Find(id);
-            if (sensor == null)
+            Location location = db.Locations.Find(id);
+            if (location == null)
             {
                 return NotFound();
             }
 
-            return Ok(sensor);
+            return Ok(location);
         }
 
-        // PUT: api/Sensors/5
+        // PUT: api/Locations/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutSensor(string id, Sensor sensor)
+        public IHttpActionResult PutLocation(string id, Location location)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != sensor.SensorId)
+            if (id != location.LocationId)
             {
                 return BadRequest();
             }
 
-            db.Entry(sensor).State = EntityState.Modified;
+            db.Entry(location).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +57,7 @@ namespace TrafficControlSystem.Controllers.Services
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SensorExists(id))
+                if (!LocationExists(id))
                 {
                     return NotFound();
                 }
@@ -70,16 +70,16 @@ namespace TrafficControlSystem.Controllers.Services
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Sensors
-        [ResponseType(typeof(Sensor))]
-        public IHttpActionResult Add(Sensor sensor)
+        [HttpPost]
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult Add(Location location)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Sensors.Add(sensor);
+            db.Locations.Add(location);
 
             try
             {
@@ -87,7 +87,7 @@ namespace TrafficControlSystem.Controllers.Services
             }
             catch (DbUpdateException)
             {
-                if (SensorExists(sensor.SensorId))
+                if (LocationExists(location.LocationId))
                 {
                     return Conflict();
                 }
@@ -97,22 +97,23 @@ namespace TrafficControlSystem.Controllers.Services
                 }
             }
 
-            return CreatedAtRoute("DefaultApi", new { id = sensor.SensorId }, sensor);
+            return CreatedAtRoute("DefaultApi", new { id = location.LocationId }, location);
         }
 
-        [HttpGet]
-        public IHttpActionResult Delete(string id)
+        // DELETE: api/Locations/5
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult DeleteLocation(string id)
         {
-            Sensor sensor = db.Sensors.Find(id);
-            if (sensor == null)
+            Location location = db.Locations.Find(id);
+            if (location == null)
             {
                 return NotFound();
             }
 
-            db.Sensors.Remove(sensor);
+            db.Locations.Remove(location);
             db.SaveChanges();
 
-            return Ok(sensor);
+            return Ok(location);
         }
 
         protected override void Dispose(bool disposing)
@@ -124,9 +125,9 @@ namespace TrafficControlSystem.Controllers.Services
             base.Dispose(disposing);
         }
 
-        private bool SensorExists(string id)
+        private bool LocationExists(string id)
         {
-            return db.Sensors.Count(e => e.SensorId == id) > 0;
+            return db.Locations.Count(e => e.LocationId == id) > 0;
         }
     }
 }

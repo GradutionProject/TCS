@@ -16,20 +16,20 @@ select,
 textarea {
     max-width: 280px;
 }
-
-.widget {
+.wdgt-container {
     z-index:20;
     position:absolute;
-    top:5%;
+    top:0;
     left:45%;
-
- 
-
-
+}
+.widget {
 }
     .widget .icon {
         float:left;
     }
     .widget .title {
         padding-left:25px;
+    }
+    .widget.minimize .panel-body{
+        display:none;
     }

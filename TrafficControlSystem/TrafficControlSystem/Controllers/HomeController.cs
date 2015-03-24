@@ -47,5 +47,18 @@ namespace TrafficControlSystem.Controllers
             var model = db.Sensors.OrderBy(s => s.Name).ToList();
             return View(model);
         }
+
+        public ActionResult Locations()
+        {
+            DataModel db = new DataModel();
+            return View(new Location());
+        }
+
+        public ActionResult AllLocations()
+        {
+            DataModel db = new DataModel();
+            var model = db.Locations.OrderBy(l => l.Name).ToList();
+            return View(model);
+        }
     }
 }

@@ -24,6 +24,7 @@
 
     <script type="text/javascript">
         var map;
+        
         var sensors = [];
         var sensorCounter = 1;
         function initialize() {
@@ -33,26 +34,24 @@
             };
             map = new google.maps.Map(document.getElementById('map-canvas'),
                 mapOptions);
-
+            
+            google.maps.event.addListener(map, 'tilesloaded', function (event) {
+                map.loaded = true;
+                $('body').trigger('map-loaded');
+            });
         }
        
         google.maps.event.addDomListener(window, 'load', initialize);
         
     </script>
-    @Html.Action("Sensors")
-    <script>
-        (function () {
-            $('.widget').draggable();
-            $('section.update-section').on('refresh', function () {
-                var $this = $(this);
-                var url = $this.data('url');
-                $.ajax({
-                    url: url
-                }).success(function (result) {
-                    console.log(result);
-                });
-            });
-        })();
-    </script>
+    <div class="wdgt-container">
+        @Html.Action("Sensors")
+        @Html.Action("Locations")
+    </div>
+
+    <script src="~/Scripts/TCS/widget.js"></script>
+    <script src="~/Scripts/TCS/form.js"></script>
+    <script src="~/Scripts/TCS/sensors.js"></script>
+    <script src="~/Scripts/TCS/locations.js"></script>
 </body>
 </html>

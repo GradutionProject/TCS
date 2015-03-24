@@ -1,21 +1,64 @@
 ﻿
 (function () {
-    //var actions = {
-    //    removeSensor: function (sensorId) {
-    //        sensors[sensorId].marker.setMap(null);
-    //        $('.senors-grid .sens-' + sensorId).remove();
-    //    },
     var $addSensorForm = $('.form.add-sensor');
+    var sensors = [];
+    function showSensors(data) {
+        $(sensors).each(function (i, sensor) {
+            sensor.marker.setMap(null);
+        });
+
+        sensors = [];
+        $(data).each(function (i, sensor) {
+
+            var latLng = new google.maps.LatLng(sensor.Latitude, sensor.Longitude);
+            sensor.marker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+                title: sensor.Name,
+                icon: "/images/More-16.png"
+            });
+            sensors.push(sensor);
+        });
+    }
+    function loadSensors() {
+        $.ajax({
+            url: '/api/sensors/all',
+            method: 'GET',
+            dataType: 'json'
+        }).success(function (result) {
+            showSensors(result);
+        }).error(function (err) {
+            console.log(err);
+        });
+    };
+    var mapLoaded = false;
+    if (map)
+    {
+        if (map.loaded)
+        {
+            mapLoaded = true;
+            loadSensors();
+        }
+    }
+    if (!mapLoaded)
+    {
+        $('body').on('map-loaded', function () {
+            loadSensors();
+        });
+    }
+   
     $addSensorForm.on('selectLocation', function () {
         var addSensorListener = google.maps.event.addListener(map, 'click', function (event) {
             google.maps.event.removeListener(addSensorListener);
             var inputs = $addSensorForm.data('inputs');
-            var marker = new google.maps.Marker({
+            var sensor = {};
+            sensor.marker = new google.maps.Marker({
                 position: event.latLng,
                 map: map,
                 title: "Sensor",
                 icon: "/images/More-16.png"
             });
+            sensors.push(sensor);
             inputs["Latitude"].val(event.latLng.lat());
             inputs["Longitude"].val(event.latLng.lng());
             map.setOptions({
@@ -33,33 +76,35 @@
             sensor[input] = inputs[input].val();
         }
         $.ajax({
-            url: '/api/sensors/',
+            url: '/api/sensors/add',
             method: 'POST',
             dataType: 'json',
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(sensor)
         }).done(function (response) {
-            var Url = $('.update-section').data('url');
+            var $updateSection = $addSensorForm.find('.update-section');
+            var Url = $updateSection.data('url');
             $.get(Url, function (result) {
-                $('.update-section').html(result);
+                $updateSection.html(result);
+                loadSensors();
             });
         }
         );
     });
-    $('.form.add-sensor').each(function () {
-        var $form = $(this);
-        var inputs = {};
-        $form.find('.form-control').each(function () {
-            var $input = $(this);
-            inputs[$input.attr("name")] = $input;
-        });
-        $form.data('inputs', inputs);
-        $form.find('.action').each(function () {
-            var $action = $(this);
-            $action.click(function () {
-                var command = $action.data("action-click");
-                $form.trigger(command);
-            })
-        });
+
+    $addSensorForm.on('delete', function (e, sensorId) {
+        $.ajax({
+            url: '/api/sensors/delete/' + sensorId,
+            method: 'GET'
+        }).done(function (response) {
+            var $updateSection = $addSensorForm.find('.update-section');
+            var Url = $updateSection.data('url');
+            $.get(Url, function (result) {
+                $updateSection.html(result);
+                loadSensors();
+            });
+        }
+        );
     });
+
 })();
