@@ -84,6 +84,7 @@
         }).done(function (response) {
             var $updateSection = $addSensorForm.find('.update-section');
             var Url = $updateSection.data('url');
+            $('body').trigger('sensor-added');
             $.get(Url, function (result) {
                 $updateSection.html(result);
                 loadSensors();

@@ -100,9 +100,9 @@ namespace TrafficControlSystem.Controllers.Services
             return CreatedAtRoute("DefaultApi", new { id = location.LocationId }, location);
         }
 
-        // DELETE: api/Locations/5
+        [HttpGet]
         [ResponseType(typeof(Location))]
-        public IHttpActionResult DeleteLocation(string id)
+        public IHttpActionResult Delete(string id)
         {
             Location location = db.Locations.Find(id);
             if (location == null)

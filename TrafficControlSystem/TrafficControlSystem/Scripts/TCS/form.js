@@ -7,7 +7,8 @@
             inputs[$input.attr("name")] = $input;
         });
         $form.data('inputs', inputs);
-        $form.on('click', '[data-action-click]', function () {
+        $form.on('click', '[data-action-click]', function (e) {
+            
             var $action = $(this);
             var command = $action.data("action-click");
             var parameter = $action.data("action-parameter");

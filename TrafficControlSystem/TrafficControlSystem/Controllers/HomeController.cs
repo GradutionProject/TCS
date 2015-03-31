@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TCS.Model;
+using TrafficControlSystem.Models;
 
 namespace TrafficControlSystem.Controllers
 {
@@ -50,14 +51,15 @@ namespace TrafficControlSystem.Controllers
 
         public ActionResult Locations()
         {
-            DataModel db = new DataModel();
             return View(new Location());
         }
 
         public ActionResult AllLocations()
         {
             DataModel db = new DataModel();
-            var model = db.Locations.OrderBy(l => l.Name).ToList();
+            LocationsViewModel model = new LocationsViewModel();
+            model.Locations = db.Locations.OrderBy(l => l.Name).ToList();
+            model.Sensors = db.Sensors.OrderBy(l => l.Name).ToList();
             return View(model);
         }
     }

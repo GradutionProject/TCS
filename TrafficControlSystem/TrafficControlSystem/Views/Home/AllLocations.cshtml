@@ -1,26 +1,41 @@
-﻿@model IEnumerable<TCS.Model.Location>
+﻿@model TrafficControlSystem.Models.LocationsViewModel
 @{
     Layout = null;
 }
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th></th>
-    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.LocationId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.LocationId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.LocationId })
-        </td>
-    </tr>
+@foreach (var item in Model.Locations)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel tree minimize panel-default location">
+                <div class="panel-heading tree-heading">
+                    @Html.DisplayFor(modelItem => item.Name)
+                    <a href="#" title="Delete Location" data-action-parameter="@item.LocationId" class="action link" data-action-click="delete">
+                        <i class="fa fa-remove"></i>
+                    </a>
+                </div>
+                <div class="panel-body tree-body">
+                    <div class="tree minimize">
+                        <div class="tree-heading"><a href="#">Assign Sensor</a></div>
+                        <div class="tree-body">
+                            <select class="form-control">
+                                @foreach (var sensor in Model.Sensors)
+                                {
+                                    <option value="@sensor.SensorId">@sensor.Name</option>
+                                }
+                            </select>
+                            <select class="form-control">
+                                <option>Input</option>
+                                <option>Output</option>
+                            </select>
+                            <div class="btn btn-default" data-action-click="assignSensor" data-action-parameter="@item.LocationId">Assign</div>
+                        </div>
+                    </div>
+                    <div class="location-sensor">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
-
-</table>

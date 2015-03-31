@@ -2,7 +2,7 @@
     $('.widget').draggable();
     $('.widget').each(function(){
         var $widget = $(this);
-        $widget.find('.panel-heading').click(function () {
+        $widget.find('.panel-heading').first().click(function () {
             if ($widget.hasClass('minimize')) {
                 $('.widget').addClass('minimize', 500);
             }

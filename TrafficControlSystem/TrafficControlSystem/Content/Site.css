@@ -17,12 +17,21 @@ textarea {
     max-width: 280px;
 }
 .wdgt-container {
-    z-index:20;
-    position:absolute;
-    top:0;
-    left:45%;
+    
+    position: absolute;
+    left:10%;
 }
 .widget {
+    z-index:999;
+    float:left;
+
+}
+.widget .widget-body
+{
+    min-height: 500px;
+    min-width:400px;
+    overflow-x:scroll;
+    overflow-y:scroll;
 }
     .widget .icon {
         float:left;
@@ -33,3 +42,12 @@ textarea {
     .widget.minimize .panel-body{
         display:none;
     }
+.tree.minimize .tree-body {
+    display:none;
+} 
+.tree.minimize .tree-heading {
+    cursor:pointer;
+}
+.tree .tree-heading .link {
+    float:right;
+}

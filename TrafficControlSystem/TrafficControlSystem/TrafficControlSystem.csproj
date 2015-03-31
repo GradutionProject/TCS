@@ -136,6 +136,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\LocationsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +207,7 @@
     <Content Include="Scripts\TCS\form.js" />
     <Content Include="Scripts\TCS\locations.js" />
     <Content Include="Scripts\TCS\sensors.js" />
+    <Content Include="Scripts\TCS\tree.js" />
     <Content Include="Scripts\TCS\widget.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
@@ -231,7 +233,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

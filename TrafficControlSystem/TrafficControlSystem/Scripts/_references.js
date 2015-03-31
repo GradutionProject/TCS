@@ -12,3 +12,4 @@
 /// <reference path="tcs/form.js" />
 /// <reference path="tcs/widget.js" />
 /// <reference path="tcs/locations.js" />
+/// <reference path="tcs/tree.js" />
