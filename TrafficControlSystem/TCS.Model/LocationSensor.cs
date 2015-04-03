@@ -26,6 +26,8 @@ namespace TCS.Model
 
         public bool InputOrOutput { get; set; }
 
+        public int Order { get; set; }
+
         public virtual Location Location { get; set; }
 
         public virtual Sensor Sensor { get; set; }

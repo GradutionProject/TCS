@@ -17,7 +17,9 @@
         @Html.Action("Locations")
     </div>
                 <div id="map-canvas"></div>
-
+    <div class="loading">
+        <img src="/Images/loading.gif" />
+    </div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/bundles/bootstrap")
@@ -41,11 +43,11 @@
             google.maps.event.addListener(map, 'tilesloaded', function (event) {
                 map.loaded = true;
                 $('body').trigger('map-loaded');
+                $('.loading').hide();
             });
         }
        
         google.maps.event.addDomListener(window, 'load', initialize);
-        
     </script>
 
     <script src="~/Scripts/TCS/widget.js"></script>

@@ -18,9 +18,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Latitude)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SpatialReference)
-            </th>
             <th></th>
         </tr>
 
@@ -38,9 +35,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Latitude)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SpatialReference)
                 </td>
                 <td>
                     <a href="#" class="action" data-action-click="delete" data-action-parameter="@item.SensorId">Delete</a>

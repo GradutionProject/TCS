@@ -12,7 +12,10 @@
             var $action = $(this);
             var command = $action.data("action-click");
             var parameter = $action.data("action-parameter");
-            $form.trigger(command, parameter);
+            $form.trigger(command, {
+                context : $action,
+                parameter: parameter
+            });
             return false;
         });
     });

@@ -38,13 +38,16 @@
                         </div>
                         <div class="container-fluid">
                             <div class="location-sensor">
-                                @foreach (var ls in item.LocationSensors)
+                                @foreach (var ls in item.LocationSensors.OrderBy(l => l.Order))
                                 {
                                     <div class="row">
                                         <div class="col-md-2 text-primary">Sensor</div>
                                         <div class="col-md-2">@ls.Sensor.Name</div>
-                                        <div class="col-md-2 text-primary">As</div>
+                                        <div class="col-md-1 text-primary">As</div>
                                         <div class="col-md-2">@(ls.InputOrOutput ? "Input" : "Output")</div>
+                                        <div class="col-md-1"><a href="#" title="Move Up" data-action-click="moveUp" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-arrow-up"></i></a></div>
+                                        <div class="col-md-1"><a href="#" title="Move Down" data-action-click="moveDown" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-arrow-down"></i></a></div>
+                                        <div class="col-md-1"><a href="#" title="Unassign" data-action-click="unassign" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-remove"></i></a></div>
                                     </div>
                                 }
                             </div>

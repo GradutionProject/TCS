@@ -28,9 +28,7 @@ namespace TCS.Model
         public decimal Longitude { get; set; }
 
         public decimal Latitude { get; set; }
-
-        public int SpatialReference { get; set; }
-
+        
         public virtual ICollection<LocationSensor> LocationSensors { get; set; }
 
         public virtual ICollection<SensorData> SensorDatas { get; set; }

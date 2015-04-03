@@ -1,6 +1,7 @@
 ﻿(function () {
+
     var $form = $('.form.locations');
-    var locations = {};
+    var locationLayer;
     $form.on('submit', function () {
         var inputs = $form.data('inputs');
         var location = {};
@@ -22,38 +23,49 @@
         var $updateSection = $form.find('.update-section');
         var Url = $updateSection.data('url');
         $.get(Url, function (result) {
+            $('.loading').hide();
             $updateSection.html(result);
         });
         loadLocationsData();
-    
+
     }
 
-    function loadLocationsData()
-    {
-        $.get('/api/locations/all', function (result) {
-            $.each(result, function (i, loc) {
-
-                loc.LocationSensors = loc.LocationSensors.sort(function (ls1, ls2) { return ls1.Sensor.Name > ls2.Sensor.Name; });
-                drawLocation(loc);
-            });
+    function loadLocationsData() {
+        $('.loading').hide();
+        locationLayer.forEach(function (location) {
+            locationLayer.remove(location);
         });
+        locationLayer.loadGeoJson("/api/locations/geo");
     }
     var mapLoaded = false;
     if (map) {
         if (map.loaded) {
             mapLoaded = true;
-            loadLocationsData();
+            init();
         }
     }
     if (!mapLoaded) {
         $('body').on('map-loaded', function () {
-            loadLocationsData();
+            init();
         });
     }
+    function init() {
+        locationLayer = new google.maps.Data({ map: map });
+        locationLayer.setStyle(function (feature) {
+            var count = feature.getProperty('count');
+            var color = count > 20 ? 'red' : 'blue';
+            return {
+                fillColor: color,
+                strokeWeight: 1
+            };
+        });
+        loadLocationsData();
+    }
 
-    $form.on('delete', function (e, parameter) {
+    $form.on('delete', function (e, params) {
+        $('.loading').show();
         $.ajax({
-            url: '/api/locations/delete/' + parameter,
+            url: '/api/locations/delete/' + params.parameter,
             method: 'GET',
             dataType: 'json'
         }).done(function (response) {
@@ -62,62 +74,92 @@
         );
     });
     $form.on('click', '.assign-sensor', function () {
+        $('loading').show();
         var $this = $(this);
         var $parent = $this.parent('.select-sensor-panel');
         var $sensor = $parent.find('.select-sensor');
         var $type = $parent.find('.select-sensor-type');
         $.ajax({
-            url: '/api/locations/assignSensor/?locationId=' + $this.data('location-id') + '&sensorId=' + $sensor.val() + '&input=' + $type.val(),
+            url: '/api/locations/AssignSensor/?locationId=' + $this.data('location-id') + '&sensorId=' + $sensor.val() + '&input=' + $type.val(),
             method: 'GET',
             dataType: 'json'
         }).done(function (response) {
             var $sensors = $parent.parents('.location').find('.location-sensor');
-            var html = "";
-            response.LocationSensors = response.LocationSensors.sort(function (ls1, ls2) { return ls1.Sensor.Name > ls2.Sensor.Name; });
-            for (var i = 0; i < response.LocationSensors.length; i++) {
-                var locSensor = response.LocationSensors[i];
-                var data = {
-                    SensorName: locSensor.Sensor.Name,
-                    InputOrOutput: locSensor.InputOrOutput ? "Input" : "Output"
-                };
-                var template = $('#locationSensorTemplate').html();
-                for (var prop in data) {
-                    template = template.replace('{' + prop + '}', data[prop]);
-                }
-                html += template;
-            }
-            $sensors.html(html);
-            drawLocation(response);
+            bindSenosrs($sensors, response);
+            $('.loading').hide();
         });
 
     });
 
-    function drawLocation(location) {
-        var paths = [];
+    $form.on('unassign', function (e, parms) {
+        $('.loading').show();
+        var $link = parms.context;
+        var locSensorId = $link.data('location-sensor-id');
+        $.ajax({
+            url: '/api/locations/UnassignSensor/?locationSensorId=' + locSensorId,
+            method: 'GET',
+            dataType: 'json'
+        }).done(function (response) {
+            var $sensors = $link.parents('.location').find('.location-sensor');
+            bindSenosrs($sensors, response);
+            $('.loading').hide();
+        });
+    });
+
+    $form.on('moveUp', function (e, parms) {
+        $('.loading').show();
+        var $link = parms.context;
+        var locSensorId = $link.data('location-sensor-id');
+        $.ajax({
+            url: '/api/locations/MoveUpSensor/?locationSensorId=' + locSensorId,
+            method: 'GET',
+            dataType: 'json'
+        }).done(function (response) {
+            var $sensors = $link.parents('.location').find('.location-sensor');
+            bindSenosrs($sensors, response);
+            $('.loading').hide();
+        });
+    });
+
+
+    $form.on('moveDown', function (e, parms) {
+        $('.loading').show();
+        var $link = parms.context;
+        var locSensorId = $link.data('location-sensor-id');
+        $.ajax({
+            url: '/api/locations/MoveDownSensor/?locationSensorId=' + locSensorId,
+            method: 'GET',
+            dataType: 'json'
+        }).done(function (response) {
+            var $sensors = $link.parents('.location').find('.location-sensor');
+            bindSenosrs($sensors, response);
+            $('.loading').hide();
+        });
+    });
+
+    function bindSenosrs($sensors, location) {
+        var html = "";
+        location.LocationSensors = location.LocationSensors.sort(function (ls1, ls2) { return ls1.Order > ls2.Order; });
         for (var i = 0; i < location.LocationSensors.length; i++) {
-            var sensor = location.LocationSensors[i].Sensor;
-            paths.push(new google.maps.LatLng(sensor.Latitude, sensor.Longitude));
+            var locSensor = location.LocationSensors[i];
+            var data = {
+                SensorName: locSensor.Sensor.Name,
+                InputOrOutput: locSensor.InputOrOutput ? "Input" : "Output",
+                Id: locSensor.LocationSensorsId
+            };
+            var template = $('#locationSensorTemplate').html();
+            for (var prop in data) {
+                template = template.replace(new RegExp('{' + prop + '}', 'g'), data[prop]);
+            }
+            html += template;
         }
-        if (location.LocationSensors.length > 2) {
-            location.overlay = new google.maps.Polygon({
-                map: map,
-                paths: paths,
-                fillColor: "#FF0000"
-            });
-        } else {
-            location.overlay = new google.maps.Polyline({
-                map: map,
-                paths: paths,
-                fillColor: "#FF0000"
-            });
-        }
-        if (locations[location.LocationId]) {
-            locations[location.LocationId].overlay.setMap(null);
-        }
-        locations[location.LocationId] = location;
+        $sensors.html(html);
+        loadLocationsData(location);
 
     }
-    $('body').on('sensor-added', function () {
+
+
+    $('body').on('sensor-changed', function () {
         loadLoactions();
     });
 })();

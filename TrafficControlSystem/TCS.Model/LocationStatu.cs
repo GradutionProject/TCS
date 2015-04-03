@@ -12,9 +12,7 @@ namespace TCS.Model
         public string LocationStatusId { get; set; }
 
         public int Count { get; set; }
-
-        public DateTime ModificationData { get; set; }
-
+        
         [Required]
         [StringLength(128)]
         public string LocationId { get; set; }

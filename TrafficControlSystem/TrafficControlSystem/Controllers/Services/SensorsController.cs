@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using TCS.Model;
+using TrafficControlSystem.Models;
 
 namespace TrafficControlSystem.Controllers.Services
 {
@@ -22,6 +23,14 @@ namespace TrafficControlSystem.Controllers.Services
             return db.Sensors.ToList();
         }
 
+        [HttpGet]
+        public GeoSensorCollection Geo()
+        {
+            var sensors = db.Sensors.ToList();
+            GeoSensorCollection collection = new GeoSensorCollection();
+            collection.Features =sensors.Select(s => new GeoSensor(s)).ToList();
+            return collection;
+        }
         // GET: api/Sensors/5
         [ResponseType(typeof(Sensor))]
         public IHttpActionResult GetSensor(string id)

@@ -65,8 +65,7 @@ DROP TABLE SensorType
 
 CREATE TABLE Location ( 
 	LocationId nvarchar(128) NOT NULL,
-	Name nvarchar(512) NOT NULL,
-	SpatialReference int NOT NULL
+	Name nvarchar(512) NOT NULL
 )
 ;
 
@@ -74,14 +73,14 @@ CREATE TABLE LocationSensors (
 	LocationSensorsId nvarchar(128) NOT NULL,
 	LocationId nvarchar(128) NOT NULL,
 	SensorId nvarchar(128) NOT NULL,
-	InputOrOutput bit NOT NULL
+	InputOrOutput bit NOT NULL,
+	[Order] int
 )
 ;
 
 CREATE TABLE LocationStatus ( 
 	LocationStatusId nvarchar(128) NOT NULL,
 	Count int NOT NULL,
-	ModificationData datetime NOT NULL,
 	LocationId nvarchar(128) NOT NULL,
 	SensorDataId nvarchar(128) NOT NULL
 )
@@ -108,8 +107,7 @@ CREATE TABLE Sensors (
 	Name nvarchar(512) NOT NULL,
 	TypeId nvarchar(128) NOT NULL,
 	Longitude decimal(38,10) NOT NULL,
-	Latitude decimal(38,10) NOT NULL,
-	SpatialReference int NOT NULL
+	Latitude decimal(38,10) NOT NULL
 )
 ;
 

@@ -16,38 +16,65 @@ select,
 textarea {
     max-width: 280px;
 }
-.wdgt-container {
-    
-    position: absolute;
-    left:10%;
-}
-.widget {
-    z-index:999;
-    float:left;
 
+.wdgt-container {
+    position: absolute;
+    left: 10%;
 }
-.widget .widget-body
-{
-    min-height: 500px;
-    min-width:400px;
-    overflow-x:scroll;
-    overflow-y:scroll;
+
+.widget {
+    z-index: 999;
+    float: left;
 }
+
+    .widget .widget-body {
+        min-height: 500px;
+        min-width: 400px;
+        overflow-x: scroll;
+        overflow-y: scroll;
+    }
+
     .widget .icon {
-        float:left;
+        float: left;
     }
+
     .widget .title {
-        padding-left:25px;
+        padding-left: 25px;
     }
-    .widget.minimize .panel-body{
-        display:none;
+
+    .widget.minimize .panel-body {
+        display: none;
     }
+
 .tree.minimize .tree-body {
-    display:none;
-} 
+    display: none;
+}
+
 .tree.minimize .tree-heading {
-    cursor:pointer;
+    cursor: pointer;
 }
+
 .tree .tree-heading .link {
-    float:right;
+    float: right;
 }
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99999999999;
+    opacity: 0.8;
+    background-color: ActiveCaption;
+}
+
+    .loading img {
+        width: 295px;
+        height: 294px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -147px; /* Half the height */
+        margin-left: -145px;
+    }

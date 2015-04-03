@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using TCS.Model;
+using TrafficControlSystem.Models;
 
 namespace TrafficControlSystem.Controllers.Services
 {
@@ -20,9 +21,22 @@ namespace TrafficControlSystem.Controllers.Services
         [ResponseType(typeof(Location))]
         public IHttpActionResult All()
         {
-            return Ok(db.Locations.Include(l => l.LocationSensors).Include(l => l.LocationSensors.Select(ls => ls.Sensor)).ToList());
+            return Ok(db.Locations.ToList());
         }
 
+        [HttpGet]
+        [ResponseType(typeof(Location))]
+        public GeoLocationCollection Geo()
+        {
+            var locations = db.Locations
+                .Include(l => l.LocationStatus)
+                .Include(l => l.LocationSensors)
+                .Include(l => l.LocationSensors.Select(ls => ls.Sensor))
+                .ToList();
+            GeoLocationCollection collection = new GeoLocationCollection();
+            collection.Features = locations.Select(s => new GeoLocation(s)).ToList();
+            return collection;
+        }
         // GET: api/Locations/5
         [ResponseType(typeof(Location))]
         public IHttpActionResult GetLocation(string id)
@@ -153,6 +167,12 @@ namespace TrafficControlSystem.Controllers.Services
                 locationSensor.SensorId = sensorId;
                 locationSensor.InputOrOutput = input;
                 locationSensor.Sensor = db.Sensors.FirstOrDefault(s => s.SensorId.Equals(sensorId, StringComparison.OrdinalIgnoreCase));
+                int maxOrder = 1;
+                if (location.LocationSensors.Any())
+                {
+                    maxOrder = location.LocationSensors.Max(ls => ls.Order) + 1;
+                }
+                locationSensor.Order = maxOrder;
                 db.LocationSensors.Add(locationSensor);
                 location.LocationSensors = location.LocationSensors ?? new List<LocationSensor>();
                 location.LocationSensors.Add(locationSensor);
@@ -162,6 +182,87 @@ namespace TrafficControlSystem.Controllers.Services
 
             return Ok(location);
         }
+
+        [HttpGet]
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult UnassignSensor(string locationSensorId)
+        {
+            LocationSensor locSensor = db.LocationSensors.FirstOrDefault(ls => ls.LocationSensorsId.Equals(locationSensorId, StringComparison.OrdinalIgnoreCase));
+            if (locSensor == null)
+            {
+                return NotFound();
+            }
+            Location location = db.Locations
+                .Include(l => l.LocationSensors)
+                .FirstOrDefault(l => l.LocationId.Equals(locSensor.LocationId, StringComparison.OrdinalIgnoreCase));
+
+            if (location != null)
+            {
+                var assignedLocSensors = location.LocationSensors.FirstOrDefault(ls => ls.LocationSensorsId.Equals(locSensor.LocationSensorsId, StringComparison.OrdinalIgnoreCase));
+                location.LocationSensors.Remove(assignedLocSensors);
+            }
+            db.LocationSensors.Remove(locSensor);
+            db.SaveChanges();
+            return Ok(location);
+        }
+        [HttpGet]
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult MoveUpSensor(string locationSensorId)
+        {
+            LocationSensor locSensor = db.LocationSensors
+                .Include(ls => ls.Location)
+                .Include(ls => ls.Location.LocationSensors)
+                .FirstOrDefault(ls => ls.LocationSensorsId.Equals(locationSensorId, StringComparison.OrdinalIgnoreCase));
+            if (locSensor == null)
+            {
+                return NotFound();
+            }
+          
+            if (locSensor.Location != null)
+            {
+                var currentOrder = locSensor.Order;
+                var prevLocSensor = locSensor.Location.LocationSensors
+                    .Where(ls => ls.Order < currentOrder)
+                    .OrderByDescending(ls => ls.Order).FirstOrDefault();
+                if (prevLocSensor != null)
+                {
+                    locSensor.Order = prevLocSensor.Order;
+                    prevLocSensor.Order = currentOrder;
+                    db.SaveChanges();
+                }
+            }
+            return Ok(locSensor.Location);
+        }
+
+        [HttpGet]
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult MoveDownSensor(string locationSensorId)
+        {
+            LocationSensor locSensor = db.LocationSensors
+                .Include(ls => ls.Location)
+                .Include(ls => ls.Location.LocationSensors)
+                .FirstOrDefault(ls => ls.LocationSensorsId.Equals(locationSensorId, StringComparison.OrdinalIgnoreCase));
+            if (locSensor == null)
+            {
+                return NotFound();
+            }
+
+            if (locSensor.Location != null)
+            {
+                var currentOrder = locSensor.Order;
+                var nextLocSensor = locSensor.Location.LocationSensors
+                    .Where(ls => ls.Order > currentOrder)
+                    .OrderBy(ls => ls.Order).FirstOrDefault();
+                if (nextLocSensor != null)
+                {
+                    locSensor.Order = nextLocSensor.Order;
+                    nextLocSensor.Order = currentOrder;
+                    db.SaveChanges();
+                }
+            }
+            return Ok(locSensor.Location);
+        }
+
 
         protected override void Dispose(bool disposing)
         {

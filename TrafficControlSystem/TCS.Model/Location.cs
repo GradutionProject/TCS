@@ -22,9 +22,7 @@ namespace TCS.Model
         [Required]
         [StringLength(512)]
         public string Name { get; set; }
-
-        public int SpatialReference { get; set; }
-
+        
         public virtual ICollection<LocationSensor> LocationSensors { get; set; }
 
         public virtual ICollection<LocationStatu> LocationStatus { get; set; }
