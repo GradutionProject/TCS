@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Web;
 using System.Web.Mvc;
 using TCS.Model;
@@ -58,7 +59,10 @@ namespace TrafficControlSystem.Controllers
         {
             DataModel db = new DataModel();
             LocationsViewModel model = new LocationsViewModel();
-            model.Locations = db.Locations.OrderBy(l => l.Name).ToList();
+            model.Locations = db.Locations
+                .Include(l => l.LocationSensors)
+                .Include(l => l.LocationSensors.Select(ls => ls.Sensor))
+                .OrderBy(l => l.Name).ToList();
             model.Sensors = db.Sensors.OrderBy(l => l.Name).ToList();
             return View(model);
         }

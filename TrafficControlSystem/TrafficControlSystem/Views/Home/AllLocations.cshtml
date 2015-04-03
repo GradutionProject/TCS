@@ -2,40 +2,56 @@
 @{
     Layout = null;
 }
-
-@foreach (var item in Model.Locations)
-{
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel tree minimize panel-default location">
-                <div class="panel-heading tree-heading">
-                    @Html.DisplayFor(modelItem => item.Name)
-                    <a href="#" title="Delete Location" data-action-parameter="@item.LocationId" class="action link" data-action-click="delete">
-                        <i class="fa fa-remove"></i>
-                    </a>
-                </div>
-                <div class="panel-body tree-body">
-                    <div class="tree minimize">
-                        <div class="tree-heading"><a href="#">Assign Sensor</a></div>
-                        <div class="tree-body">
-                            <select class="form-control">
-                                @foreach (var sensor in Model.Sensors)
-                                {
-                                    <option value="@sensor.SensorId">@sensor.Name</option>
-                                }
-                            </select>
-                            <select class="form-control">
-                                <option>Input</option>
-                                <option>Output</option>
-                            </select>
-                            <div class="btn btn-default" data-action-click="assignSensor" data-action-parameter="@item.LocationId">Assign</div>
-                        </div>
+<div class="container-fluid">
+    @foreach (var item in Model.Locations)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel tree minimize panel-default location">
+                    <div class="panel-heading tree-heading">
+                        @Html.DisplayFor(modelItem => item.Name)
+                        <a href="#" title="Delete Location" data-action-parameter="@item.LocationId" class="action link" data-action-click="delete">
+                            <i class="fa fa-remove"></i>
+                        </a>
                     </div>
-                    <div class="location-sensor">
-
+                    <div class="panel-body tree-body">
+                        <div class="tree minimize container-fluid">
+                            <div class="tree-heading row ">
+                                <div class="btn btn-default">
+                                    <i class="fa fa-plus"></i>
+                                    Assign Sensor
+                                </div>
+                            </div>
+                            <div class="tree-body select-sensor-panel">
+                                <select class="form-control select-sensor">
+                                    @foreach (var sensor in Model.Sensors)
+                                    {
+                                        <option value="@sensor.SensorId">@sensor.Name</option>
+                                    }
+                                </select>
+                                <select class="form-control select-sensor-type">
+                                    <option value="true">Input</option>
+                                    <option value="false">Output</option>
+                                </select>
+                                <div class="btn btn-default assign-sensor" data-location-id="@item.LocationId">Assign</div>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="location-sensor">
+                                @foreach (var ls in item.LocationSensors)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-2 text-primary">Sensor</div>
+                                        <div class="col-md-2">@ls.Sensor.Name</div>
+                                        <div class="col-md-2 text-primary">As</div>
+                                        <div class="col-md-2">@(ls.InputOrOutput ? "Input" : "Output")</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>

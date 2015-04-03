@@ -8,6 +8,11 @@ namespace TCS.Model
 
     public partial class LocationSensor
     {
+
+        public LocationSensor()
+        {
+            LocationSensorsId = Guid.NewGuid().ToString();
+        }
         [Key]
         public string LocationSensorsId { get; set; }
 

@@ -16,10 +16,11 @@ namespace TrafficControlSystem.Controllers.Services
     {
         private DataModel db = new DataModel();
 
-        // GET: api/Locations
-        public IQueryable<Location> GetLocations()
+        [HttpGet]
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult All()
         {
-            return db.Locations;
+            return Ok(db.Locations.Include(l => l.LocationSensors).Include(l => l.LocationSensors.Select(ls => ls.Sensor)).ToList());
         }
 
         // GET: api/Locations/5
@@ -104,14 +105,60 @@ namespace TrafficControlSystem.Controllers.Services
         [ResponseType(typeof(Location))]
         public IHttpActionResult Delete(string id)
         {
-            Location location = db.Locations.Find(id);
+            Location location = db.Locations.Include(l => l.LocationSensors).FirstOrDefault(l => l.LocationId.Equals(id, StringComparison.OrdinalIgnoreCase));
+            if (location == null)
+            {
+                return NotFound();
+            }
+            List<LocationSensor> removedLocSenors = new List<LocationSensor>();
+            foreach (var locSensor in location.LocationSensors)
+            {
+                removedLocSenors.Add(locSensor);
+            }
+            foreach (var locSensor in removedLocSenors)
+            {
+                db.LocationSensors.Remove(locSensor);
+            }
+            db.Locations.Remove(location);
+            db.SaveChanges();
+
+            return Ok(location);
+        }
+
+        [HttpGet]
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult AssignSensor(string locationId, string sensorId, bool input)
+        {
+            Location location = db.Locations
+                .Include(l => l.LocationSensors)
+                .Include(l => l.LocationSensors.Select(ls => ls.Sensor))
+                .FirstOrDefault(l => l.LocationId.Equals(locationId, StringComparison.OrdinalIgnoreCase));
+
             if (location == null)
             {
                 return NotFound();
             }
 
-            db.Locations.Remove(location);
-            db.SaveChanges();
+            if (location.LocationSensors.Any(ls => ls.SensorId.Equals(sensorId, StringComparison.OrdinalIgnoreCase)))
+            {
+                var locationSensor = location.LocationSensors.FirstOrDefault(ls => ls.SensorId.Equals(sensorId, StringComparison.OrdinalIgnoreCase));
+                locationSensor.InputOrOutput = input;
+                db.Entry(locationSensor).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            else
+            {
+                var locationSensor = new LocationSensor();
+                locationSensor.LocationId = locationId;
+                locationSensor.SensorId = sensorId;
+                locationSensor.InputOrOutput = input;
+                locationSensor.Sensor = db.Sensors.FirstOrDefault(s => s.SensorId.Equals(sensorId, StringComparison.OrdinalIgnoreCase));
+                db.LocationSensors.Add(locationSensor);
+                location.LocationSensors = location.LocationSensors ?? new List<LocationSensor>();
+                location.LocationSensors.Add(locationSensor);
+                db.SaveChanges();
+            }
+
 
             return Ok(location);
         }
