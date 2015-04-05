@@ -83,45 +83,66 @@ namespace TrafficControlSystem.Controllers.Services
         [ResponseType(typeof(Sensor))]
         public IHttpActionResult Add(Sensor sensor)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Sensors.Add(sensor);
-
             try
             {
-                db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (SensorExists(sensor.SensorId))
+                if (!ModelState.IsValid)
                 {
-                    return Conflict();
+                    return BadRequest(ModelState);
                 }
-                else
+                if(db.Sensors.Any(s => s.Name.Equals(sensor.Name,StringComparison.OrdinalIgnoreCase)))
                 {
-                    throw;
+                    throw new Exception("The sensor name already exist.");
                 }
-            }
+                db.Sensors.Add(sensor);
 
-            return CreatedAtRoute("DefaultApi", new { id = sensor.SensorId }, sensor);
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbUpdateException)
+                {
+                    if (SensorExists(sensor.SensorId))
+                    {
+                        return Conflict();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return CreatedAtRoute("DefaultApi", new { id = sensor.SensorId }, sensor);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         [HttpGet]
         public IHttpActionResult Delete(string id)
         {
-            Sensor sensor = db.Sensors.Find(id);
-            if (sensor == null)
+            try
             {
-                return NotFound();
+                Sensor sensor = db.Sensors.Find(id);
+                if (sensor == null)
+                {
+                    return NotFound();
+                }
+                if (db.LocationSensors.Any(ls => ls.SensorId.Equals(sensor.SensorId, StringComparison.OrdinalIgnoreCase)))
+                {
+                    throw new Exception("Can't delete sensor assigned to location.");
+                }
+
+                db.Sensors.Remove(sensor);
+                db.SaveChanges();
+
+                return Ok(sensor);
             }
-
-            db.Sensors.Remove(sensor);
-            db.SaveChanges();
-
-            return Ok(sensor);
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         protected override void Dispose(bool disposing)

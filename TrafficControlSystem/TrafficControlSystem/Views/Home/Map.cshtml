@@ -9,7 +9,13 @@
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/themes/base")
     @Scripts.Render("~/bundles/modernizr")
-    
+    <script type="text/template" id="errorTemplate">
+        <div>
+            <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            {error}
+        </div>
+    </script>
 </head>
 <body>
     <div class="wdgt-container">
@@ -27,29 +33,8 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpZhVKRniPiVcE8VCZmvtbVTyyWz2m-Og">
     </script>
 
-    <script type="text/javascript">
-        var map;
-        
-        var sensors = [];
-        var sensorCounter = 1;
-        function initialize() {
-            var mapOptions = {
-                center: { lat: 30.099408866368016, lng: 391.32052463912964 },
-                zoom: 15
-            };
-            map = new google.maps.Map(document.getElementById('map-canvas'),
-                mapOptions);
-            
-            google.maps.event.addListener(map, 'tilesloaded', function (event) {
-                map.loaded = true;
-                $('body').trigger('map-loaded');
-                $('.loading').hide();
-            });
-        }
-       
-        google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-
+    <script src="~/Scripts/TCS/common.js"></script>
+    <script src="~/Scripts/TCS/map.js"></script>
     <script src="~/Scripts/TCS/widget.js"></script>
     <script src="~/Scripts/TCS/form.js"></script>
     <script src="~/Scripts/TCS/tree.js"></script>

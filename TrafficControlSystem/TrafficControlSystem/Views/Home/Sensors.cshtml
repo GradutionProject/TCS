@@ -2,61 +2,89 @@
     ViewBag.Title = "Sensors";
     Layout = null;
 }
+<script id="sensorInfoWindow" type="text/template">
+    <fieldset>
+        <legend>Sensor: {name}</legend>
+        <dl>
+            <dt>Latitude</dt>
+            <dd>{lat}</dd>
+            <dt>Longitude</dt>
+            <dd>{lng}</dd>
+            <dt>Type</dt>
+            <dd>{type}</dd>
+        </dl>
+    </fieldset>
+</script>
 <div class="widget minimize">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="icon"><i class="fa fa-plus-circle"></i></div><div class="title">Sensors</div>
         </div>
         <div class="panel-body form add-sensor widget-body">
-            <div class="btn btn-default" data-action-click="toggleSensorsVisibility" data-status="1">Hide Sensors</div>
-            <div class="tree minimize">
-                <p class="tree-heading">
-                    <a href="#">Add Sensor</a>
-                </p>
-                <div class="form-horizontal tree-body">
-                    <div class="form-group">
-                        <label class="control-label col-md-4">Sensor Name</label>
-                        <div class="col-md-6">
-                            <input type="text" name="Name" class="form-control" />
-                        </div>
+            <div class="container">
+                <div class="row">
+                    <div class="btn btn-default" data-action-click="toggleSensorsVisibility" data-status="1">Hide Sensors</div>
+                </div>
+                <div class="row err-summary">
+                    <div class="alert alert-danger" style="display:none" role="alert">
+                       
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-4">Latitude</label>
-                        <div class="col-md-6">
-                            <input type="text" name="Latitude" placeholder="Latitude" class="form-control disabled" disabled="disabled" />
+                </div>
+                <div class="row">
+                    <div class="panel panel-info tree minimize">
+                        <div class="tree-heading panel-heading">
+                            <i class="fa fa-plus"></i>
+                            Add Sensor
                         </div>
-                        <div class="col-md-1">
-                            <a href="#" title="Select Location" class="action" data-action-click="selectLocation"><i class="fa fa-location-arrow"></i></a>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-4">Longitude</label>
-                        <div class="col-md-6">
-                            <input type="text" name="Longitude" placeholder="Longitude" class="form-control disabled" disabled="disabled" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-4">Type</label>
-                        <div class="col-md-6">
-                            <select class="form-control" name="TypeId">
-                                <option> -- Select Type-- </option>
-                                @foreach (var type in ViewBag.SensorTypes as IEnumerable<TCS.Model.SensorType>)
-                                {
-                                    <option value="@type.TypeId">@type.Name</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-offset-2 col-md-10">
-                            <div class="btn btn-primary action" data-action-click="submit">Save</div>
+                        <div class="form-horizontal tree-body panel-body">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Sensor Name</label>
+                                <div class="col-md-6">
+                                    <input type="text" name="Name" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Latitude</label>
+                                <div class="col-md-6">
+                                    <input type="text" name="Latitude" placeholder="Latitude" class="form-control disabled" disabled="disabled" />
+                                </div>
+                                <div class="col-md-1">
+                                    <a href="#" title="Select Location" class="action" data-action-click="selectLocation"><i class="fa fa-map-marker"></i></a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Longitude</label>
+                                <div class="col-md-6">
+                                    <input type="text" name="Longitude" placeholder="Longitude" class="form-control disabled" disabled="disabled" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Type</label>
+                                <div class="col-md-6">
+                                    <select class="form-control" name="TypeId">
+                                        <option> -- Select Type-- </option>
+                                        @foreach (var type in ViewBag.SensorTypes as IEnumerable<TCS.Model.SensorType>)
+                                    {
+                                            <option value="@type.TypeId">@type.Name</option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <div class="btn btn-primary action" data-action-click="submit">Save</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <section data-url="@Url.Action("AllSensors", "Home")" class="update-section">
+                        @Html.Action("AllSensors", "Home")
+                    </section>
+                </div>
             </div>
-            <section data-url="@Url.Action("AllSensors", "Home")" class="update-section">
-                @Html.Action("AllSensors", "Home")
-            </section>
+            
         </div>
     </div>
 

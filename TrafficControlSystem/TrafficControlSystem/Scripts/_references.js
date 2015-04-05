@@ -13,3 +13,5 @@
 /// <reference path="tcs/widget.js" />
 /// <reference path="tcs/locations.js" />
 /// <reference path="tcs/tree.js" />
+/// <reference path="tcs/common.js" />
+/// <reference path="tcs/map.js" />

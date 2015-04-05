@@ -28,10 +28,10 @@ textarea {
 }
 
     .widget .widget-body {
-        min-height: 500px;
-        min-width: 400px;
-        overflow-x: scroll;
-        overflow-y: scroll;
+        height: 400px;
+        width: 450px;
+        overflow-x: auto;
+        overflow-y: auto;
     }
 
     .widget .icon {

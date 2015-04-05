@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-<div class="container-fluid">
+<div class="container">
     @foreach (var item in Model.Locations)
     {
         <div class="row">
@@ -15,42 +15,48 @@
                         </a>
                     </div>
                     <div class="panel-body tree-body">
-                        <div class="tree minimize container-fluid">
-                            <div class="tree-heading row ">
-                                <div class="btn btn-default">
+                        <div class="panel panel-info tree minimize">
+                            <div class="panel-heading tree-heading">
                                     <i class="fa fa-plus"></i>
                                     Assign Sensor
-                                </div>
                             </div>
-                            <div class="tree-body select-sensor-panel">
-                                <select class="form-control select-sensor">
-                                    @foreach (var sensor in Model.Sensors)
-                                    {
-                                        <option value="@sensor.SensorId">@sensor.Name</option>
-                                    }
-                                </select>
-                                <select class="form-control select-sensor-type">
-                                    <option value="true">Input</option>
-                                    <option value="false">Output</option>
-                                </select>
-                                <div class="btn btn-default assign-sensor" data-location-id="@item.LocationId">Assign</div>
+                            <div class="panel-body tree-body select-sensor-panel">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <select class="form-control select-sensor">
+                                            @foreach (var sensor in Model.Sensors)
+                                            {
+                                                <option value="@sensor.SensorId">@sensor.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select class="form-control select-sensor-type">
+                                            <option value="true">Input</option>
+                                            <option value="false">Output</option>
+                                        </select>
+                                    </div>
+                                    <a href="#" title="Assign Sensor" data-action-click="assign" data-location-id="@item.LocationId">
+                                        <i class="fa fa-thumb-tack"></i>
+                                    </a>
+                                </form>
                             </div>
                         </div>
-                        <div class="container-fluid">
-                            <div class="location-sensor">
-                                @foreach (var ls in item.LocationSensors.OrderBy(l => l.Order))
+                        <div class="location-sensor">
+                            @foreach (var ls in item.LocationSensors.OrderBy(l => l.Order))
                                 {
-                                    <div class="row">
-                                        <div class="col-md-2 text-primary">Sensor</div>
-                                        <div class="col-md-2">@ls.Sensor.Name</div>
-                                        <div class="col-md-1 text-primary">As</div>
-                                        <div class="col-md-2">@(ls.InputOrOutput ? "Input" : "Output")</div>
-                                        <div class="col-md-1"><a href="#" title="Move Up" data-action-click="moveUp" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-arrow-up"></i></a></div>
-                                        <div class="col-md-1"><a href="#" title="Move Down" data-action-click="moveDown" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-arrow-down"></i></a></div>
-                                        <div class="col-md-1"><a href="#" title="Unassign" data-action-click="unassign" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-remove"></i></a></div>
-                                    </div>
+                                <div class="row">
+                                    <div class="col-md-2 text-primary">Sensor</div>
+                                    <div class="col-md-2">@ls.Sensor.Name</div>
+                                    <div class="col-md-1 text-primary">As</div>
+                                    <div class="col-md-2">@(ls.InputOrOutput ? "Input" : "Output")</div>
+                                    <div class="col-md-1"><a href="#" title="Zoom" class="action" data-action-click="sensor-zoom" data-action-parameter="@ls.SensorId"><i class="fa fa-search"></i></a></div>
+                                    <div class="col-md-1"><a href="#" title="Flash on Map" class="action" data-action-click="sensor-flash" data-action-parameter="@ls.SensorId"><i class="fa fa-bolt"></i></a></div>
+                                    <div class="col-md-1"><a href="#" title="Move Up" data-action-click="moveUp" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-arrow-up"></i></a></div>
+                                    <div class="col-md-1"><a href="#" title="Move Down" data-action-click="moveDown" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-arrow-down"></i></a></div>
+                                    <div class="col-md-1"><a href="#" title="Unassign" data-action-click="unassign" data-location-sensor-id="@ls.LocationSensorsId"><i class="fa fa-remove"></i></a></div>
+                                </div>
                                 }
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -3,43 +3,23 @@
     Layout = null;
 }
 
+<div class="row">
+    <div class="col-md-4">
+        <strong>@Html.DisplayNameFor(model => model.Name)</strong>
+    </div>
+    <div class="col-md-4">
+        <strong>@Html.DisplayNameFor(model => model.SensorType.Name)</strong>
+    </div>
 
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SensorType.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Longitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Latitude)
-            </th>
-            <th></th>
-        </tr>
 
-        @foreach (var item in Model)
-    {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SensorType.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Longitude)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Latitude)
-                </td>
-                <td>
-                    <a href="#" class="action" data-action-click="delete" data-action-parameter="@item.SensorId">Delete</a>
-                </td>
-            </tr>
-    }
-
-    </table>
+</div>
+@foreach (var item in Model)
+{
+    <div class="row">
+        <div class="col-md-4 text-primary">@Html.DisplayFor(modelItem => item.Name)</div>
+        <div class="col-md-4">@Html.DisplayFor(modelItem => item.SensorType.Name)</div>
+        <div class="col-md-1"><a href="#" title="Zoom" class="action" data-action-click="zoom" data-action-parameter="@item.SensorId"><i class="fa fa-search"></i></a></div>
+        <div class="col-md-1"><a href="#" title="Flash on Map" class="action" data-action-click="flash" data-action-parameter="@item.SensorId"><i class="fa fa-bolt"></i></a></div>
+        <div class="col-md-1"><a href="#" title="Delete" class="action" data-action-click="delete" data-action-parameter="@item.SensorId"><i class="fa fa-close"></i></a></div>
+    </div>
+}

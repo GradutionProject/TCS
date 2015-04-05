@@ -20,7 +20,10 @@ namespace TrafficControlSystem.Models
             Properties = new SensorProperties()
             {
                 Name = sensor.Name,
-                Id = sensor.SensorId
+                Id = sensor.SensorId,
+                Type = sensor.SensorType.Name,
+                Lat = sensor.Latitude,
+                Lng = sensor.Longitude
             };
         }
         [DataMember(Name="type")]
@@ -48,5 +51,15 @@ namespace TrafficControlSystem.Models
 
         [DataMember(Name = "id")]
         public string Id { get; set; }
+
+
+        [DataMember(Name = "type")]
+        public string Type { get; set; }
+
+        [DataMember(Name = "lat")]
+        public decimal Lat { get; set; }
+
+        [DataMember(Name = "lng")]
+        public decimal Lng { get; set; }
     }
 }

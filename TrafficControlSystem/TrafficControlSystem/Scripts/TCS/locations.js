@@ -2,23 +2,7 @@
 
     var $form = $('.form.locations');
     var locationLayer;
-    $form.on('submit', function () {
-        var inputs = $form.data('inputs');
-        var location = {};
-        for (var input in inputs) {
-            location[input] = inputs[input].val();
-        }
-        $.ajax({
-            url: '/api/locations/add',
-            method: 'POST',
-            dataType: 'json',
-            contentType: "application/json;charset=utf-8",
-            data: JSON.stringify(location)
-        }).done(function (response) {
-            loadLoactions();
-        }
-        );
-    });
+
     function loadLoactions() {
         var $updateSection = $form.find('.update-section');
         var Url = $updateSection.data('url');
@@ -26,17 +10,20 @@
             $('.loading').hide();
             $updateSection.html(result);
         });
-        loadLocationsData();
 
     }
 
+    // Load location data - Redraw locations on map
     function loadLocationsData() {
         $('.loading').hide();
+        locationLayer.setStyle({ visible: true });
         locationLayer.forEach(function (location) {
             locationLayer.remove(location);
         });
         locationLayer.loadGeoJson("/api/locations/geo");
     }
+
+
     var mapLoaded = false;
     if (map) {
         if (map.loaded) {
@@ -62,6 +49,27 @@
         loadLocationsData();
     }
 
+    // Add new location
+    $form.on('submit', function () {
+        $('.loading').show();
+        var inputs = $form.data('inputs');
+        var location = {};
+        for (var input in inputs) {
+            location[input] = inputs[input].val();
+        }
+        $.ajax({
+            url: '/api/locations/add',
+            method: 'POST',
+            dataType: 'json',
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(location)
+        }).done(function (response) {
+            $('.loading').hide();
+            loadLoactions();
+        });
+    });
+
+    // Delete location
     $form.on('delete', function (e, params) {
         $('.loading').show();
         $.ajax({
@@ -70,13 +78,16 @@
             dataType: 'json'
         }).done(function (response) {
             loadLoactions();
+            loadLocationsData();
         }
         );
     });
-    $form.on('click', '.assign-sensor', function () {
-        $('loading').show();
-        var $this = $(this);
-        var $parent = $this.parent('.select-sensor-panel');
+
+    //assign sensor to location
+    $form.on('assign', function (e, params) {
+        $('.loading').show();
+        var $this = params.context;
+        var $parent = $this.parents('.select-sensor-panel').first();
         var $sensor = $parent.find('.select-sensor');
         var $type = $parent.find('.select-sensor-type');
         $.ajax({
@@ -86,11 +97,13 @@
         }).done(function (response) {
             var $sensors = $parent.parents('.location').find('.location-sensor');
             bindSenosrs($sensors, response);
+            loadLocationsData();
             $('.loading').hide();
         });
 
     });
 
+    // Unassign sensor from location
     $form.on('unassign', function (e, parms) {
         $('.loading').show();
         var $link = parms.context;
@@ -102,10 +115,12 @@
         }).done(function (response) {
             var $sensors = $link.parents('.location').find('.location-sensor');
             bindSenosrs($sensors, response);
+            loadLocationsData();
             $('.loading').hide();
         });
     });
 
+    // Move sensor up in order
     $form.on('moveUp', function (e, parms) {
         $('.loading').show();
         var $link = parms.context;
@@ -115,13 +130,14 @@
             method: 'GET',
             dataType: 'json'
         }).done(function (response) {
+            loadLocationsData();
             var $sensors = $link.parents('.location').find('.location-sensor');
             bindSenosrs($sensors, response);
             $('.loading').hide();
         });
     });
 
-
+    // Move sensor down in order
     $form.on('moveDown', function (e, parms) {
         $('.loading').show();
         var $link = parms.context;
@@ -133,33 +149,45 @@
         }).done(function (response) {
             var $sensors = $link.parents('.location').find('.location-sensor');
             bindSenosrs($sensors, response);
+            loadLocationsData();
             $('.loading').hide();
         });
     });
 
+    // Update location sensors
     function bindSenosrs($sensors, location) {
         var html = "";
         location.LocationSensors = location.LocationSensors.sort(function (ls1, ls2) { return ls1.Order > ls2.Order; });
+        var sensors = [];
         for (var i = 0; i < location.LocationSensors.length; i++) {
             var locSensor = location.LocationSensors[i];
-            var data = {
+            var sensor = {
                 SensorName: locSensor.Sensor.Name,
                 InputOrOutput: locSensor.InputOrOutput ? "Input" : "Output",
-                Id: locSensor.LocationSensorsId
+                Id: locSensor.LocationSensorsId,
+                SensorId : locSensor.SesnorId
             };
-            var template = $('#locationSensorTemplate').html();
-            for (var prop in data) {
-                template = template.replace(new RegExp('{' + prop + '}', 'g'), data[prop]);
-            }
-            html += template;
+            sensors.push(sensor);
         }
-        $sensors.html(html);
-        loadLocationsData(location);
-
+        $sensors.template($('#locationSensorTemplate'), sensors);
     }
 
-
+    // Zoom to sensor
+    $form.on('sensor-zoom', function (e, params)
+    {
+        $('body').trigger('sensorZoom', params);
+    });
+    // Zoom to sensor
+    $form.on('sensor-flash', function (e, params) {
+        $('body').trigger('sensorFlash', params);
+    });
+    // Sensors changed
     $('body').on('sensor-changed', function () {
+        locationLayer.setStyle({ visible: true });
         loadLoactions();
+    });
+
+    $('body').on('select-sensor', function () {
+        locationLayer.setStyle({ visible: false });
     });
 })();

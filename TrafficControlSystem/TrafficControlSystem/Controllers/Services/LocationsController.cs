@@ -34,7 +34,7 @@ namespace TrafficControlSystem.Controllers.Services
                 .Include(l => l.LocationSensors.Select(ls => ls.Sensor))
                 .ToList();
             GeoLocationCollection collection = new GeoLocationCollection();
-            collection.Features = locations.Select(s => new GeoLocation(s)).ToList();
+            collection.Features = locations.Where(l => l.LocationSensors.Count > 0).Select(s => new GeoLocation(s)).ToList();
             return collection;
         }
         // GET: api/Locations/5
