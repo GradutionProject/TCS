@@ -29,6 +29,7 @@
             var $errSummary = $(this).find('.err-summary .alert').first();
             $errSummary.template($('#errorTemplate'), errors, 'error');
             $errSummary.show();
+            $errSummary.parents('.widget-body').scrollTop(0);
         });
     };
     $.fn.hideError = function () {

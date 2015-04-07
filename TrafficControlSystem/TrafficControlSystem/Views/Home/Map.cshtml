@@ -9,6 +9,7 @@
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/themes/base")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/Content/dataTables")
     <script type="text/template" id="errorTemplate">
         <div>
             <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
@@ -18,10 +19,30 @@
     </script>
 </head>
 <body>
-    <div class="wdgt-container">
+    <nav class="navbar navbar-default wdgt-container">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Traffic Control System</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a class="widget-trigger" data-widget="wdgt-sensors" href="#">Sensors</a></li>
+                    <li><a class="widget-trigger" data-widget="wdgt-location" href="#">Locations</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
         @Html.Action("Sensors")
         @Html.Action("Locations")
-    </div>
                 <div id="map-canvas"></div>
     <div class="loading">
         <img src="/Images/loading.gif" />
@@ -29,10 +50,12 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/dataTables")
+   
+
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpZhVKRniPiVcE8VCZmvtbVTyyWz2m-Og">
     </script>
-
     <script src="~/Scripts/TCS/common.js"></script>
     <script src="~/Scripts/TCS/map.js"></script>
     <script src="~/Scripts/TCS/widget.js"></script>

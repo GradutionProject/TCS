@@ -32,7 +32,7 @@ namespace TrafficControlSystem.Models
             Geometry.Coordinates.Add(paths);
             Properties = new LocationProperties()
             {
-                Count = location.LocationStatus.Count,
+                Count =  location.LocationStatus.Count > 0 ? location.LocationStatus.FirstOrDefault().Count : 0,
                 Id = location.LocationId,
                 Name = location.Name
             };

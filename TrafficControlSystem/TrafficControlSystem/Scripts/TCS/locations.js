@@ -16,7 +16,7 @@
     // Load location data - Redraw locations on map
     function loadLocationsData() {
         $('.loading').hide();
-        locationLayer.setStyle({ visible: true });
+        toggleLayerVisibility(true);
         locationLayer.forEach(function (location) {
             locationLayer.remove(location);
         });
@@ -38,13 +38,17 @@
     }
     function init() {
         locationLayer = new google.maps.Data({ map: map });
-        locationLayer.setStyle(function (feature) {
-            var count = feature.getProperty('count');
-            var color = count > 20 ? 'red' : 'blue';
-            return {
-                fillColor: color,
-                strokeWeight: 1
-            };
+        toggleLayerVisibility(true);
+        google.maps.event.addListener(locationLayer, 'click', function (e) {
+            var feature = e.feature;
+            var info = {};
+            feature.forEachProperty(function (val, name) {
+                info[name] = val;
+            });
+            map.infowindow.setContent($.template($('#locationInfoWindow'), info));
+            
+            map.infowindow.setPosition(e.latLng);
+            map.infowindow.open(map);
         });
         loadLocationsData();
     }
@@ -183,11 +187,24 @@
     });
     // Sensors changed
     $('body').on('sensor-changed', function () {
-        locationLayer.setStyle({ visible: true });
+        toggleLayerVisibility(true);
         loadLoactions();
     });
 
     $('body').on('select-sensor', function () {
-        locationLayer.setStyle({ visible: false });
+        toggleLayerVisibility(false);
     });
+
+    function toggleLayerVisibility(visible)
+    {
+        locationLayer.setStyle(function (feature) {
+            var count = feature.getProperty('count');
+            var color = count > 20 ? 'red' : 'blue';
+            return {
+                fillColor: color,
+                strokeWeight: 1,
+                visible: visible
+            };
+        });
+    }
 })();

@@ -15,7 +15,7 @@
         </dl>
     </fieldset>
 </script>
-<div class="widget minimize">
+<div class="widget minimize wdgt-sensors">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="icon"><i class="fa fa-plus-circle"></i></div><div class="title">Sensors</div>
@@ -62,7 +62,7 @@
                                 <label class="control-label col-md-4">Type</label>
                                 <div class="col-md-6">
                                     <select class="form-control" name="TypeId">
-                                        <option> -- Select Type-- </option>
+                                        <option value=""> -- Select Type-- </option>
                                         @foreach (var type in ViewBag.SensorTypes as IEnumerable<TCS.Model.SensorType>)
                                     {
                                             <option value="@type.TypeId">@type.Name</option>

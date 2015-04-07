@@ -70,16 +70,25 @@
     // Add new sensor
     $form.on('submit', function () {
         $form.hideError();
-        $('.loading').show();
         var inputs = $form.data('inputs');
         var sensor = {};
         for (var input in inputs) {
             sensor[input] = inputs[input].val();
         }
+        var validations = [];
+        if (sensor.Name == "") { validations.push("Sensor name is missing"); }
+        if (sensor.Latitude == "") { validations.push("Sensor position is missing"); }
+        if (sensor.TypeId == "") { validations.push("Sensor type is missing"); }
+        if (validations.length > 0) {
+            $form.showError(validations);
+            return;
+        }
+
         if (tempSensor) {
             tempSensor.setMap(null);
             tempSensor = null;
         }
+        $('.loading').show();
         $.ajax({
             url: '/api/sensors/add',
             method: 'POST',
@@ -88,14 +97,22 @@
             data: JSON.stringify(sensor)
         }).done(function (response) {
             var $updateSection = $form.find('.update-section');
-            var Url = $updateSection.data('url');
-            $('body').trigger('sensor-changed');
-            $.get(Url, function (result) {
-                $updateSection.html(result);
+            $updateSection.off('refresh-complete').on('refresh-complete', function () {
                 loadSensors();
             });
+            $updateSection.trigger('refresh');
+            $('body').trigger('sensor-changed');
+
         }).error(function (err) {
-            $form.showError([JSON.parse(err.responseText).ExceptionMessage]);
+            if (err.responseJSON.ModelState) {
+                var errors = [];
+                for (var prop in err.responseJSON.ModelState) {
+                    errors.push(err.responseJSON.ModelState[prop][0]);
+                }
+                $form.showError(errors);
+            } else {
+                $form.showError([JSON.parse(err.responseText).ExceptionMessage]);
+            }
             $('.loading').hide();
         });
     });
@@ -111,11 +128,10 @@
             $('body').trigger('sensor-changed');
             loadSensors();
             var $updateSection = $form.find('.update-section');
-            var Url = $updateSection.data('url');
-            $.get(Url, function (result) {
-                $updateSection.html(result);
+            $updateSection.off('refresh-complete').on('refresh-complete', function () {
                 $('.loading').hide();
             });
+            $updateSection.trigger('refresh');
         }).error(function (err) {
             $form.showError([JSON.parse(err.responseText).ExceptionMessage]);
             $('.loading').hide();
@@ -150,17 +166,15 @@
         if (sensor) {
             var flashCount = 0;
 
-            function flash()
-            {
+            function flash() {
                 if (flashCount % 2 == 0) {
                     sensorLayer.remove(sensor);
-                } else
-                {
+                } else {
                     sensorLayer.add(sensor);
                 }
                 flashCount++;
                 if (flashCount < 6)
-                { window.setTimeout( flash, 500); }
+                { window.setTimeout(flash, 500); }
             }
             flash();
         }

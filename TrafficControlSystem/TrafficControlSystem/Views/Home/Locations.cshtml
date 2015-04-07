@@ -19,7 +19,16 @@
         </div>
     </div>
 </script>
-<div class="widget minimize">
+<script id="locationInfoWindow" type="text/template">
+    <fieldset>
+        <legend>Location: {name}</legend>
+        <dl>
+            <dt>Count</dt>
+            <dd>{count}</dd>
+        </dl>
+    </fieldset>
+</script>
+<div class="widget minimize wdgt-location">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="icon"><i class="fa fa-arrows-alt"></i></div><div class="title">Locations</div>

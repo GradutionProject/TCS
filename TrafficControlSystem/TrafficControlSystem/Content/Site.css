@@ -2,6 +2,12 @@
     height: 100%;
     margin: 0;
     padding: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
 }
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
@@ -18,18 +24,30 @@ textarea {
 }
 
 .wdgt-container {
-    position: absolute;
-    left: 10%;
+    position: fixed;
+    width: 80%;
+    opacity: 0.8;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .widget {
+    position: fixed;
+    width: 80%;
+    opacity: 0.8;
+    margin-left: 10%;
+    margin-right: 10%;
+
+    bottom: -20px;
     z-index: 999;
     float: left;
 }
-
+    .widget.minimize {
+        bottom: -100px;
+    }
     .widget .widget-body {
-        height: 400px;
-        width: 450px;
+        height: 280px;
+        width: 100%;
         overflow-x: auto;
         overflow-y: auto;
     }

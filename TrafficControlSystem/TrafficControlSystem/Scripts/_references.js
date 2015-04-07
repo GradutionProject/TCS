@@ -15,3 +15,5 @@
 /// <reference path="tcs/tree.js" />
 /// <reference path="tcs/common.js" />
 /// <reference path="tcs/map.js" />
+/// <reference path="datatables/dataTables.bootstrap.js" />
+/// <reference path="datatables/jquery.dataTables.js" />

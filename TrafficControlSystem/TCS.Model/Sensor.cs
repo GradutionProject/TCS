@@ -17,16 +17,18 @@ namespace TCS.Model
 
         public string SensorId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage="Sensor name is missing.")]
         [StringLength(512)]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage="Select sensor type.")]
         [StringLength(128)]
         public string TypeId { get; set; }
 
+        [Required(ErrorMessage="Sensor longitude is missing.")]
         public decimal Longitude { get; set; }
 
+        [Required(ErrorMessage = "Sensor latitude is missing.")]
         public decimal Latitude { get; set; }
         
         public virtual ICollection<LocationSensor> LocationSensors { get; set; }
