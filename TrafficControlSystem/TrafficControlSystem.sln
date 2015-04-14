@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrafficControlSystem", "Tra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCS.Model", "TCS.Model\TCS.Model.csproj", "{3A76062A-97AD-4D27-ADCD-BB6F4286FBE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketServer", "C:\Users\Nader\Desktop\arduino-socket-csharp-master\arduino-socket-csharp-master\VisualStudio\SocketServer\SocketServer\SocketServer.csproj", "{79977236-27CE-47AC-AAB2-D8350252E1B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketServer", "SocketServer\SocketServer.csproj", "{79977236-27CE-47AC-AAB2-D8350252E1B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCS.SensorSimulator", "TCS.SensorSimulator\TCS.SensorSimulator.csproj", "{062DA781-5232-4944-9149-D4246FCD1EE1}"
 EndProject
