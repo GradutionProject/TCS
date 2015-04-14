@@ -13,6 +13,7 @@ namespace TCS.Model
         {
             LocationStatus = new HashSet<LocationStatu>();
             LocationStatusHistories = new HashSet<LocationStatusHistory>();
+            SensorDataId = Guid.NewGuid().ToString();
         }
 
         public string SensorDataId { get; set; }

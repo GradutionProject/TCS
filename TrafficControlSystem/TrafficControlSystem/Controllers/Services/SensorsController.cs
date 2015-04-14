@@ -124,7 +124,7 @@ namespace TrafficControlSystem.Controllers.Services
         {
             try
             {
-                Sensor sensor = db.Sensors.Find(id);
+                Sensor sensor = db.Sensors.Include(s => s.SensorDatas).FirstOrDefault(s => s.SensorId.Equals(id, StringComparison.OrdinalIgnoreCase));
                 if (sensor == null)
                 {
                     return NotFound();
@@ -133,7 +133,15 @@ namespace TrafficControlSystem.Controllers.Services
                 {
                     throw new Exception("Can't delete sensor assigned to location.");
                 }
-
+                List<SensorData> removedSensorData = new List<SensorData>();
+                foreach (var sensorData in sensor.SensorDatas)
+                {
+                    removedSensorData.Add(sensorData);
+                }
+                foreach (var sensorData in removedSensorData)
+                {
+                    db.SensorDatas.Remove(sensorData);
+                }
                 db.Sensors.Remove(sensor);
                 db.SaveChanges();
 

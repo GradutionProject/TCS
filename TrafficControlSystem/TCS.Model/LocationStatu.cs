@@ -8,6 +8,10 @@ namespace TCS.Model
 
     public partial class LocationStatu
     {
+        public LocationStatu()
+        {
+            LocationStatusId = Guid.NewGuid().ToString();
+        }
         [Key]
         public string LocationStatusId { get; set; }
 

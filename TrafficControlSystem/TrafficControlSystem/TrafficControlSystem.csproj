@@ -132,8 +132,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\Services\LocationsController.cs" />
     <Compile Include="Controllers\Services\SensorsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -142,6 +144,7 @@
     <Compile Include="Models\GeoLocationCollection.cs" />
     <Compile Include="Models\GeoSensorCollection.cs" />
     <Compile Include="Models\LocationsViewModel.cs" />
+    <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -235,11 +238,18 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\Home\Map.cshtml" />
-    <Content Include="Views\Home\Sensors.cshtml" />
-    <Content Include="Views\Home\AllSensors.cshtml" />
-    <Content Include="Views\Home\AllLocations.cshtml" />
-    <Content Include="Views\Home\Locations.cshtml" />
+    <Content Include="Views\Map\Index.cshtml" />
+    <Content Include="Views\Map\Sensors.cshtml" />
+    <Content Include="Views\Map\AllSensors.cshtml" />
+    <Content Include="Views\Map\AllLocations.cshtml" />
+    <Content Include="Views\Map\Locations.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\Delete.cshtml" />
+    <Content Include="Views\Users\Details.cshtml" />
+    <Content Include="Views\Users\Edit.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

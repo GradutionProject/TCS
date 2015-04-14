@@ -71,16 +71,19 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-md-offset-2 col-md-10">
+                                <div class="col-md-offset-2 col-md-2">
                                     <div class="btn btn-primary action" data-action-click="submit">Save</div>
+                                </div>
+                                <div class="col-md-offset-2 col-md-2">
+                                    <div class="btn btn-default action" data-action-click="cancel">Cancel</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <section data-url="@Url.Action("AllSensors", "Home")" class="update-section">
-                        @Html.Action("AllSensors", "Home")
+                    <section data-url="@Url.Action("AllSensors", "Map")" class="update-section">
+                        @Html.Action("AllSensors", "Map")
                     </section>
                 </div>
             </div>

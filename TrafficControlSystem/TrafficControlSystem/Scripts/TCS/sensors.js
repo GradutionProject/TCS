@@ -1,6 +1,6 @@
 ﻿
 (function () {
-    var $form = $('.form.add-sensor');
+    var form = $('.form.add-sensor').form()[0];
 
     var sensorLayer;
     function loadSensors() {
@@ -40,11 +40,11 @@
 
     var tempSensor;
     // Select Location from map
-    $form.on('selectLocation', function () {
+    form.on('selectLocation', function () {
         $('body').trigger('select-sensor');
         var addSensorListener = google.maps.event.addListener(map, 'click', function (event) {
             google.maps.event.removeListener(addSensorListener);
-            var inputs = $form.data('inputs');
+            var inputs = form.getInputs();
             var sensor = {};
             if (tempSensor) {
                 tempSensor.setMap(null);
@@ -68,9 +68,9 @@
 
     });
     // Add new sensor
-    $form.on('submit', function () {
-        $form.hideError();
-        var inputs = $form.data('inputs');
+    form.on('submit', function () {
+        form.hideError();
+        var inputs = form.getInputs();
         var sensor = {};
         for (var input in inputs) {
             sensor[input] = inputs[input].val();
@@ -80,7 +80,7 @@
         if (sensor.Latitude == "") { validations.push("Sensor position is missing"); }
         if (sensor.TypeId == "") { validations.push("Sensor type is missing"); }
         if (validations.length > 0) {
-            $form.showError(validations);
+            form.showError(validations);
             return;
         }
 
@@ -96,7 +96,7 @@
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(sensor)
         }).done(function (response) {
-            var $updateSection = $form.find('.update-section');
+            var $updateSection = form.$form.find('.update-section');
             $updateSection.off('refresh-complete').on('refresh-complete', function () {
                 loadSensors();
             });
@@ -104,21 +104,13 @@
             $('body').trigger('sensor-changed');
 
         }).error(function (err) {
-            if (err.responseJSON.ModelState) {
-                var errors = [];
-                for (var prop in err.responseJSON.ModelState) {
-                    errors.push(err.responseJSON.ModelState[prop][0]);
-                }
-                $form.showError(errors);
-            } else {
-                $form.showError([JSON.parse(err.responseText).ExceptionMessage]);
-            }
+            form.handleAJAXError(err);
             $('.loading').hide();
         });
     });
     // Delete sensor
-    $form.on('delete', function (e, params) {
-        $form.hideError();
+    form.on('delete', function (e, params) {
+        form.hideError();
         var sensorId = params.parameter;
         $('.loading').show();
         $.ajax({
@@ -127,19 +119,19 @@
         }).done(function (response) {
             $('body').trigger('sensor-changed');
             loadSensors();
-            var $updateSection = $form.find('.update-section');
+            var $updateSection = form.$form.find('.update-section');
             $updateSection.off('refresh-complete').on('refresh-complete', function () {
                 $('.loading').hide();
             });
             $updateSection.trigger('refresh');
         }).error(function (err) {
-            $form.showError([JSON.parse(err.responseText).ExceptionMessage]);
+            form.showError([JSON.parse(err.responseText).ExceptionMessage]);
             $('.loading').hide();
         });
     });
     // Zoom to sensor
-    $form.on('zoom', function (e, params) {
-        $form.hideError();
+    form.on('zoom', function (e, params) {
+        form.hideError();
         var sensorId = params.parameter;
         var sensor;
         sensorLayer.forEach(function (feature) {
@@ -153,8 +145,8 @@
         }
     });
     // flash sensor on map
-    $form.on('flash', function (e, params) {
-        $form.hideError();
+    form.on('flash', function (e, params) {
+        form.hideError();
         var sensorId = params.parameter;
         var sensor;
         sensorLayer.forEach(function (feature) {
@@ -179,15 +171,23 @@
             flash();
         }
     });
-
+    // Clear Form 
+    form.on('cancel', function () {
+        if (tempSensor) {
+            tempSensor.setMap(null);
+            tempSensor = null;
+        }
+        $('body').trigger('select-sensor-cancel');
+        form.clear();
+    });
     $('body').on('sensorZoom', function (e, params) {
-        $form.trigger('zoom', params);
+        form.trigger('zoom', params);
     });
     $('body').on('sensorFlash', function (e, params) {
-        $form.trigger('flash', params);
+        form.trigger('flash', params);
     });
     // toggle sensors layer visibility
-    $form.on('toggleSensorsVisibility', function (e, params) {
+    form.on('toggleSensorsVisibility', function (e, params) {
         var status = params.context.data('status');
 
         if (status) {

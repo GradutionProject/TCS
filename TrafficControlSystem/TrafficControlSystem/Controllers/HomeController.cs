@@ -6,65 +6,82 @@ using System.Web;
 using System.Web.Mvc;
 using TCS.Model;
 using TrafficControlSystem.Models;
+using System.Web.Security;
 
 namespace TrafficControlSystem.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        [HttpGet]
+        public ActionResult Login()
         {
             return View();
         }
 
-        public ActionResult About()
+
+        [HttpPost]
+        public ActionResult Login(LoginModel model, string returnUrl)
         {
-            ViewBag.Message = "Your application description page.";
+            // Lets first check if the Model is valid or not
+            if (ModelState.IsValid)
+            {
+                using (DataModel db = new DataModel())
+                {
+                    string username = model.UserName;
+                    string password = model.Password;
 
-            return View();
-        }
+                    // Now if our password was enctypted or hashed we would have done the
+                    // same operation on the user entered password here, But for now
+                    // since the password is in plain text lets just authenticate directly
+                    var user = db.Users.FirstOrDefault(u => u.UserName == username && u.Password == password);
+                    bool userValid = user != null;
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
+                    // User found in the database
+                    if (userValid)
+                    {
 
-            return View();
-        }
+                        user.LastVisit = DateTime.Now;
+                        db.SaveChanges();
+                        db.Dispose();
+                        FormsAuthentication.SetAuthCookie(username, model.RememberMe);
+                        if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
+                            && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            switch ((UserRole)user.Role)
+                            {
+                                case UserRole.Manager:
+                                    return Redirect("~/Manager");
 
-        public ActionResult Map()
-        {
-            return View();
-        }
+                                case UserRole.IT:
+                                    return Redirect("~/");
 
-        public ActionResult Sensors()
-        {
-            DataModel db = new DataModel();
-            ViewBag.SensorTypes =  db.SensorTypes.ToList();
-            return View();
-        }
+                                case UserRole.Admin:
+                                    return Redirect("~/Users");
+                            }
+                            return Redirect("~/");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "The user name or password provided is incorrect.");
+                    }
+                }
+            }
 
-        public ActionResult AllSensors()
-        {
-            DataModel db = new DataModel();
-            
-            var model = db.Sensors.OrderBy(s => s.Name).ToList();
+            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        public ActionResult Locations()
+        public ActionResult Logout()
         {
-            return View(new Location());
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login");
         }
+        
 
-        public ActionResult AllLocations()
-        {
-            DataModel db = new DataModel();
-            LocationsViewModel model = new LocationsViewModel();
-            model.Locations = db.Locations
-                .Include(l => l.LocationSensors)
-                .Include(l => l.LocationSensors.Select(ls => ls.Sensor))
-                .OrderBy(l => l.Name).ToList();
-            model.Sensors = db.Sensors.OrderBy(l => l.Name).ToList();
-            return View(model);
-        }
     }
 }

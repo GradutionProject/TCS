@@ -119,21 +119,41 @@ namespace TrafficControlSystem.Controllers.Services
         [ResponseType(typeof(Location))]
         public IHttpActionResult Delete(string id)
         {
-            Location location = db.Locations.Include(l => l.LocationSensors).FirstOrDefault(l => l.LocationId.Equals(id, StringComparison.OrdinalIgnoreCase));
+            Location location = db.Locations
+                .Include(l => l.LocationSensors)
+                .Include(l => l.LocationStatus)
+                .Include(l => l.LocationStatusHistories)
+                .FirstOrDefault(l => l.LocationId.Equals(id, StringComparison.OrdinalIgnoreCase));
             if (location == null)
             {
                 return NotFound();
             }
             List<LocationSensor> removedLocSenors = new List<LocationSensor>();
+            List<LocationStatusHistory> removeHistory = new List<LocationStatusHistory>();
             foreach (var locSensor in location.LocationSensors)
             {
                 removedLocSenors.Add(locSensor);
+            }
+            foreach (var history in location.LocationStatusHistories)
+            {
+                removeHistory.Add(history);
             }
             foreach (var locSensor in removedLocSenors)
             {
                 db.LocationSensors.Remove(locSensor);
             }
+            foreach (var history in removeHistory)
+            {
+                db.LocationStatusHistories.Remove(history);
+            }
+            var status = location.LocationStatus.FirstOrDefault();
+            if (status != null)
+            {
+                db.LocationStatus.Remove(location.LocationStatus.FirstOrDefault());
+            }
+
             db.Locations.Remove(location);
+
             db.SaveChanges();
 
             return Ok(location);
@@ -231,6 +251,8 @@ namespace TrafficControlSystem.Controllers.Services
                     db.SaveChanges();
                 }
             }
+
+            locSensor.Location.LocationSensors = locSensor.Location.LocationSensors.OrderBy(ls => ls.Order).ToList();
             return Ok(locSensor.Location);
         }
 
@@ -260,6 +282,7 @@ namespace TrafficControlSystem.Controllers.Services
                     db.SaveChanges();
                 }
             }
+            locSensor.Location.LocationSensors = locSensor.Location.LocationSensors.OrderBy(ls => ls.Order).ToList();
             return Ok(locSensor.Location);
         }
 

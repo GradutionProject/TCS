@@ -1,10 +1,10 @@
 ﻿(function () {
 
-    var $form = $('.form.locations');
+    var form = $('.form.locations').form()[0];
     var locationLayer;
 
     function loadLoactions() {
-        var $updateSection = $form.find('.update-section');
+        var $updateSection = form.$form.find('.update-section');
         var Url = $updateSection.data('url');
         $.get(Url, function (result) {
             $('.loading').hide();
@@ -14,9 +14,11 @@
     }
 
     // Load location data - Redraw locations on map
-    function loadLocationsData() {
+    function loadLocationsData(refresh) {
         $('.loading').hide();
-        toggleLayerVisibility(true);
+        if (!refresh) {
+            toggleLayerVisibility(true);
+        }
         locationLayer.forEach(function (location) {
             locationLayer.remove(location);
         });
@@ -45,18 +47,20 @@
             feature.forEachProperty(function (val, name) {
                 info[name] = val;
             });
+            info.area = Math.round(google.maps.geometry.spherical.computeArea(feature.getGeometry().getArray()[0].getArray()) * 1000) / 1000;
             map.infowindow.setContent($.template($('#locationInfoWindow'), info));
-            
+
             map.infowindow.setPosition(e.latLng);
             map.infowindow.open(map);
         });
-        loadLocationsData();
+        window.setInterval(function () { loadLocationsData(true); }, 10000);
+        loadLocationsData(true);
     }
 
     // Add new location
-    $form.on('submit', function () {
+    form.on('submit', function () {
         $('.loading').show();
-        var inputs = $form.data('inputs');
+        var inputs = form.getInputs();
         var location = {};
         for (var input in inputs) {
             location[input] = inputs[input].val();
@@ -74,7 +78,7 @@
     });
 
     // Delete location
-    $form.on('delete', function (e, params) {
+    form.on('delete', function (e, params) {
         $('.loading').show();
         $.ajax({
             url: '/api/locations/delete/' + params.parameter,
@@ -88,7 +92,7 @@
     });
 
     //assign sensor to location
-    $form.on('assign', function (e, params) {
+    form.on('assign', function (e, params) {
         $('.loading').show();
         var $this = params.context;
         var $parent = $this.parents('.select-sensor-panel').first();
@@ -108,7 +112,7 @@
     });
 
     // Unassign sensor from location
-    $form.on('unassign', function (e, parms) {
+    form.on('unassign', function (e, parms) {
         $('.loading').show();
         var $link = parms.context;
         var locSensorId = $link.data('location-sensor-id');
@@ -125,7 +129,7 @@
     });
 
     // Move sensor up in order
-    $form.on('moveUp', function (e, parms) {
+    form.on('moveUp', function (e, parms) {
         $('.loading').show();
         var $link = parms.context;
         var locSensorId = $link.data('location-sensor-id');
@@ -142,7 +146,7 @@
     });
 
     // Move sensor down in order
-    $form.on('moveDown', function (e, parms) {
+    form.on('moveDown', function (e, parms) {
         $('.loading').show();
         var $link = parms.context;
         var locSensorId = $link.data('location-sensor-id');
@@ -169,7 +173,7 @@
                 SensorName: locSensor.Sensor.Name,
                 InputOrOutput: locSensor.InputOrOutput ? "Input" : "Output",
                 Id: locSensor.LocationSensorsId,
-                SensorId : locSensor.SesnorId
+                SensorId: locSensor.SensorId
             };
             sensors.push(sensor);
         }
@@ -177,12 +181,11 @@
     }
 
     // Zoom to sensor
-    $form.on('sensor-zoom', function (e, params)
-    {
+    form.on('sensor-zoom', function (e, params) {
         $('body').trigger('sensorZoom', params);
     });
     // Zoom to sensor
-    $form.on('sensor-flash', function (e, params) {
+    form.on('sensor-flash', function (e, params) {
         $('body').trigger('sensorFlash', params);
     });
     // Sensors changed
@@ -194,12 +197,22 @@
     $('body').on('select-sensor', function () {
         toggleLayerVisibility(false);
     });
+    $('body').on('select-sensor-cancel', function () {
+        toggleLayerVisibility(true);
+    });
 
-    function toggleLayerVisibility(visible)
-    {
+    function toggleLayerVisibility(visible) {
         locationLayer.setStyle(function (feature) {
             var count = feature.getProperty('count');
-            var color = count > 20 ? 'red' : 'blue';
+            var color = 'green';
+            if (google.maps.geometry) {
+                var area = google.maps.geometry.spherical.computeArea(feature.getGeometry().getArray()[0].getArray());
+                var maxCount = Math.round(area / 100);
+                var firstThreshold = maxCount / 3;
+                var secondThreshold = 2 * firstThreshold;
+                color = count < firstThreshold ? 'green'
+                    : (count < secondThreshold ? 'yellow' : 'red');
+            }
             return {
                 fillColor: color,
                 strokeWeight: 1,

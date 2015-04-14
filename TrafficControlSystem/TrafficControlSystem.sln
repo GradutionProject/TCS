@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCS.Model", "TCS.Model\TCS.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketServer", "C:\Users\Nader\Desktop\arduino-socket-csharp-master\arduino-socket-csharp-master\VisualStudio\SocketServer\SocketServer\SocketServer.csproj", "{79977236-27CE-47AC-AAB2-D8350252E1B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCS.SensorSimulator", "TCS.SensorSimulator\TCS.SensorSimulator.csproj", "{062DA781-5232-4944-9149-D4246FCD1EE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,16 @@ Global
 		{79977236-27CE-47AC-AAB2-D8350252E1B8}.Release|Mixed Platforms.Build.0 = Release|x86
 		{79977236-27CE-47AC-AAB2-D8350252E1B8}.Release|x86.ActiveCfg = Release|x86
 		{79977236-27CE-47AC-AAB2-D8350252E1B8}.Release|x86.Build.0 = Release|x86
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{062DA781-5232-4944-9149-D4246FCD1EE1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

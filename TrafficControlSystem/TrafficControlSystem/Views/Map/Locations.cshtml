@@ -25,6 +25,9 @@
         <dl>
             <dt>Count</dt>
             <dd>{count}</dd>
+
+            <dt>Area</dt>
+            <dd><span>{area}</span><span>m<sup>2</sup></span></dd>
         </dl>
     </fieldset>
 </script>
@@ -56,8 +59,8 @@
                     </div>
                 </div>
             </div>
-            <section data-url="@Url.Action("AllLocations", "Home")" class="update-section">
-                @Html.Action("AllLocations", "Home")
+            <section data-url="@Url.Action("AllLocations", "Map")" class="update-section">
+                @Html.Action("AllLocations", "Map")
             </section>
         </div>
     </div>

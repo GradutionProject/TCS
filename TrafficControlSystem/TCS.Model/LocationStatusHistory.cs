@@ -9,6 +9,9 @@ namespace TCS.Model
     [Table("LocationStatusHistory")]
     public partial class LocationStatusHistory
     {
+        public LocationStatusHistory() {
+            LocationStatusHistoryId = Guid.NewGuid().ToString();
+        }
         public string LocationStatusHistoryId { get; set; }
 
         [Required]

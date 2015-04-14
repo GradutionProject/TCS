@@ -19,6 +19,7 @@ namespace TCS.Model
         public virtual DbSet<SensorData> SensorDatas { get; set; }
         public virtual DbSet<Sensor> Sensors { get; set; }
         public virtual DbSet<SensorType> SensorTypes { get; set; }
+        public virtual DbSet<User> Users{ get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
